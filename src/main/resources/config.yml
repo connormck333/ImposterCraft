@@ -1,0 +1,62 @@
+#
+# * Settings *
+#
+# Required players to start a round
+required-players: 1
+
+# Seconds from when required amount of players join before game starts
+countdown-seconds: 5
+
+# Allow chat in lobby
+main-lobby-chat-enabled: false
+
+# Set to true to enable 2 imposters when there are 6 or more players
+two-imposters-enabled: true
+
+# Set number of seconds for emergency meetings. Emergency meetings will automatically finish once all players have voted.
+meeting-seconds: 60
+
+# Number of seconds for sabotage. If countdown runs out, game will end and imposters will win.
+sabotage-seconds-before-end-game: 30
+
+# Number of seconds between sabotages allowed
+imposter-sabotage-cooldown-seconds: 30
+
+# Number of seconds between imposter kills
+imposter-kill-cooldown-seconds: 30
+
+# Set amount of tasks per player
+num-tasks-per-player: 5
+
+# Number of seconds doors will close for
+doors-shut-seconds: 10
+
+#
+# * Roles *
+#
+# Set to false to disable all roles
+roles-enabled: true
+
+#
+# * Imposter roles *
+#
+# Set to false to disable a role
+imposter-roles:
+  bomber: true
+  janitor: true
+  camouflager: true
+  bounty_hunter: true
+  guesser: true
+
+#
+# * Crewmate roles *
+#
+# Set to false to disable a role
+crewmate-roles:
+  mayor: true
+  engineer: true
+  sheriff: true
+  deputy: true
+  lighter: true
+  guesser: true
+  protector: true

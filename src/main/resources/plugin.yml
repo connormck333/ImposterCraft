@@ -1,0 +1,75 @@
+name: Imposter
+version: '1.0-SNAPSHOT'
+main: com.imposter.imposter.ImposterCraft
+api-version: '1.21'
+depend: [ProtocolLib]
+commands:
+  impostercraft:
+    description: "Main command for the ImposterCraft mini game"
+    usage: "/imposter <subcommand>"
+    aliases: ["imposter"]
+    children:
+      impostercraft list:
+        description: "List all arenas"
+        usage: "/imposter list"
+      impostercraft join:
+        description: "Join an arena"
+        usage: "/imposter join <arena Id>"
+      impostercraft leave:
+        description: "Leave an arena"
+        usage: "/imposter leave"
+      impostercraft create:
+        description: "Create a new arena"
+        usage: "/imposter create"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft task:
+        description: "Create a new task location"
+        usage: "/imposter task <task Id> <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft spawn:
+        description: "Set a spawn point for an arena. You can set multiple per arena"
+        usage: "/imposter spawn <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft lobby:
+        description: "Set the lobby spawn point for an arena"
+        usage: "/imposter lobby <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft reset:
+        description: "Reset an arena"
+        usage: "/imposter reset <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft meeting:
+        description: "Create the emergency meeting button location"
+        usage: "/imposter meeting <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft wand:
+        description: "Get the ImposterCraft Wand"
+        usage: "/imposter wand"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft door:
+        description: "Set a door location for an arena. Use /wand to set the two locations"
+        usage: "/imposter door <item Id> <door title> <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft vent:
+        description: "Create a new vent location"
+        usage: "/imposter vent <vent category> <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft cameras create:
+        description: "Create the cameras join sign"
+        usage: "/imposter cameras create <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft cameras set:
+        description: "Set a camera location"
+        usage: "/imposter cameras set <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
