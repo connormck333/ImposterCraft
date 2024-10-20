@@ -4,8 +4,13 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import static com.imposter.imposter.utils.Constants.*;
 import static com.imposter.imposter.utils.Constants.DOOR_SHUT_BOOK;
+import static com.imposter.imposter.utils.VersionUtils.isVersionAtLeast;
+import static com.imposter.imposter.utils.VersionUtils.setEnchantmentGlintOverride;
 
 public class ImposterItems {
 
@@ -51,7 +56,7 @@ public class ImposterItems {
 
     private ItemMeta getMeta(ItemStack item, String title) {
         ItemMeta meta = item.getItemMeta();
-        meta.setEnchantmentGlintOverride(true);
+        setEnchantmentGlintOverride(meta);
         meta.setDisplayName(title);
 
         return meta;

@@ -68,11 +68,11 @@ public class DeathManager {
         player.setGameMode(GameMode.SPECTATOR);
         player.getWorld().spawnParticle(Particle.DRAGON_BREATH, deathLocation, 20);
 
-        if (arena.getGame().isGameOver()) {
-            arena.endGame();
-        } else {
+//        if (arena.getGame().isGameOver()) {
+//            arena.endGame();
+//        } else {
             arena.getCorpseManager().createCorpse(player, deathLocation, false);
-        }
+//        }
     }
 
     public void killPlayerWithoutBody(Player player) {
@@ -81,7 +81,7 @@ public class DeathManager {
     }
 
     public void sheriffKillPlayer(Player sheriff, Player hitPlayer) {
-        if (arena.getGame().protector().isPlayerProtected(hitPlayer.getUniqueId())) {
+        if (arena.getGame().protector() != null && arena.getGame().protector().isPlayerProtected(hitPlayer.getUniqueId())) {
             sendProtectedMessage(sheriff);
             return;
         } else if (arena.getGame().deputy() != null && arena.getGame().deputy().isPlayerHandcuffed(sheriff.getUniqueId())) {

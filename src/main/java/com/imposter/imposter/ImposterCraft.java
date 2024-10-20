@@ -9,7 +9,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.imposter.imposter.commands.ImposterCommand;
-import com.imposter.imposter.instances.CorpseEntity;
+import com.imposter.imposter.instances.corpse_entities.CorpseEntity;
 import com.imposter.imposter.instances.Arena;
 import com.imposter.imposter.instances.Wand;
 import com.imposter.imposter.listeners.ChatListener;

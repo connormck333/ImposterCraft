@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import static com.imposter.imposter.utils.Colors.getColor;
 import static com.imposter.imposter.utils.Colors.getColoredConcrete;
+import static com.imposter.imposter.utils.VersionUtils.setEnchantmentGlintOverride;
 
 public class Outfit {
 
@@ -56,7 +57,7 @@ public class Outfit {
     private ItemMeta getMeta(ItemMeta meta) {
         meta.addEnchant(Enchantment.BINDING_CURSE, 1, false);
         meta.setUnbreakable(true);
-        meta.setEnchantmentGlintOverride(false);
+        setEnchantmentGlintOverride(meta);
 
         return meta;
     }

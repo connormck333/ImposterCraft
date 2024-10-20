@@ -1,5 +1,6 @@
 package com.imposter.imposter.instances;
 
+import com.imposter.imposter.instances.corpse_entities.CorpseEntity;
 import org.bukkit.Location;
 
 public class PlayerCameras {

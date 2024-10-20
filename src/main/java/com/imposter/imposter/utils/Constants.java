@@ -34,4 +34,8 @@ public class Constants {
     public static final String DEPUTY_ITEM = BOLD_GREEN + "Handcuffs";
     public static final String PROTECTOR_ITEM = BOLD_GREEN + "Protection Bubble";
     public static final String GUESSER_ITEM = BOLD_RED + "Guess Roles";
+
+    // Versions
+    public static final String V_1_20 = "1.20";
+    public static final String V_1_21 = "1.21";
 }

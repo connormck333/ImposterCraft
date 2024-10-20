@@ -1,9 +1,11 @@
-package com.imposter.imposter.instances;
+package com.imposter.imposter.instances.corpse_entities;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.*;
 import com.imposter.imposter.ImposterCraft;
+import com.imposter.imposter.instances.Arena;
+import com.imposter.imposter.instances.Outfit;
 import net.minecraft.world.entity.EntityPose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,24 +18,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class CorpseEntity {
+public class CorpseEntityV1_21_1 extends CorpseEntity {
 
-    private final ImposterCraft imposterCraft;
-    private final Arena arena;
-
-    private final Player player;
     private WrappedGameProfile corpse;
-    private int id;
     private final EntityPose pose;
-    private final Location location;
 
-    public CorpseEntity(ImposterCraft imposterCraft, Arena arena, Player player, Location deathLocation, boolean isPlayerOnCameras) {
-        this.imposterCraft = imposterCraft;
-        this.arena = arena;
-
-        this.player = player;
+    public CorpseEntityV1_21_1(ImposterCraft imposterCraft, Arena arena, Player player, Location deathLocation, boolean isPlayerOnCameras) {
+        super(imposterCraft, arena, player, deathLocation);
         this.pose = isPlayerOnCameras ? EntityPose.a : EntityPose.b;
-        this.location = deathLocation;
 
         PacketContainer playerInfoPacket = createCorpse();
         PacketContainer spawnEntityPacket = spawnCorpse(deathLocation);
@@ -42,21 +34,8 @@ public class CorpseEntity {
         sendPackets(playerInfoPacket, spawnEntityPacket, metadataPacket);
     }
 
-    public int getId() {
-        return this.id;
-    }
-
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    public Location getLocation() {
-        return this.location;
-    }
-
-    private PacketContainer createCorpse() {
-        this.corpse = new WrappedGameProfile(UUID.randomUUID(), player.getName());
-        this.id = (int) (Math.random() * Integer.MAX_VALUE);
+    protected PacketContainer createCorpse() {
+        this.corpse = new WrappedGameProfile(UUID.randomUUID(), getPlayer().getName());
 
         PlayerInfoData playerInfoData = new PlayerInfoData(
                 corpse,
@@ -65,17 +44,17 @@ public class CorpseEntity {
                 null
         );
 
-        PacketContainer playerInfoPacket = imposterCraft.getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
+        PacketContainer playerInfoPacket = getImposterCraft().getProtocolManager().createPacket(PacketType.Play.Server.PLAYER_INFO);
         playerInfoPacket.getPlayerInfoActions().write(0, Collections.singleton(EnumWrappers.PlayerInfoAction.ADD_PLAYER));
         playerInfoPacket.getPlayerInfoDataLists().write(1, Collections.singletonList(playerInfoData));
 
         return playerInfoPacket;
     }
 
-    private PacketContainer spawnCorpse(Location deathLocation) {
-        PacketContainer spawnEntityPacket = imposterCraft.getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
+    protected PacketContainer spawnCorpse(Location deathLocation) {
+        PacketContainer spawnEntityPacket = getImposterCraft().getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
         spawnEntityPacket.getUUIDs().write(0, corpse.getUUID());
-        spawnEntityPacket.getIntegers().write(0, id);
+        spawnEntityPacket.getIntegers().write(0, getId());
         spawnEntityPacket.getDoubles()
                 .write(0, deathLocation.getX())
                 .write(1, deathLocation.getY())
@@ -88,27 +67,27 @@ public class CorpseEntity {
         return spawnEntityPacket;
     }
 
-    private PacketContainer getMetadataPacket() {
+    protected PacketContainer getMetadataPacket() {
         WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
         dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(6, WrappedDataWatcher.Registry.get(EntityPose.class)), this.pose);
 
         // Prepare the metadata packet
-        PacketContainer metadataPacket = imposterCraft.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+        PacketContainer metadataPacket = getImposterCraft().getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
         List<WrappedDataValue> wrappedDataValues = dataWatcher.getWatchableObjects().stream()
                 .map(watchableObject -> new WrappedDataValue(watchableObject.getIndex(), watchableObject.getWatcherObject().getSerializer(), watchableObject.getValue()))
                 .collect(Collectors.toList());
 
         // Write the entity ID and data
-        metadataPacket.getIntegers().write(0, id);
+        metadataPacket.getIntegers().write(0, getId());
         metadataPacket.getDataValueCollectionModifier().write(0, wrappedDataValues);
 
         return metadataPacket;
     }
 
-    private PacketContainer getArmorPacket(EnumWrappers.ItemSlot slot, ItemStack item) {
-        PacketContainer packet = imposterCraft.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
+    protected PacketContainer getArmorPacket(EnumWrappers.ItemSlot slot, ItemStack item) {
+        PacketContainer packet = getImposterCraft().getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
 
-        packet.getIntegers().write(0, id);
+        packet.getIntegers().write(0, getId());
         Pair<EnumWrappers.ItemSlot, ItemStack> pair = new Pair<>(slot, item);
         List<Pair<EnumWrappers.ItemSlot, ItemStack>> equipmentList = List.of(pair);
         packet.getSlotStackPairLists().write(0, equipmentList);
@@ -116,8 +95,8 @@ public class CorpseEntity {
         return packet;
     }
 
-    private void sendPackets(PacketContainer playerInfoPacket, PacketContainer spawnEntityPacket, PacketContainer metadataPacket) {
-        ItemStack[] armor = new Outfit(arena.getPlayerManager().getPlayerColor(player.getUniqueId())).getArmor();
+    protected void sendPackets(PacketContainer playerInfoPacket, PacketContainer spawnEntityPacket, PacketContainer metadataPacket) {
+        ItemStack[] armor = new Outfit(getArena().getPlayerManager().getPlayerColor(getPlayer().getUniqueId())).getArmor();
         EnumWrappers.ItemSlot[] slots = {
                 EnumWrappers.ItemSlot.FEET,
                 EnumWrappers.ItemSlot.LEGS,
@@ -125,14 +104,14 @@ public class CorpseEntity {
                 EnumWrappers.ItemSlot.HEAD
         };
 
-        for (UUID uuid : arena.getPlayers()) {
+        for (UUID uuid : getArena().getPlayers()) {
             Player p = Bukkit.getPlayer(uuid);
             try {
-                imposterCraft.getProtocolManager().sendServerPacket(p, playerInfoPacket);
-                imposterCraft.getProtocolManager().sendServerPacket(p, spawnEntityPacket);
-                imposterCraft.getProtocolManager().sendServerPacket(p, metadataPacket);
+                getImposterCraft().getProtocolManager().sendServerPacket(p, playerInfoPacket);
+                getImposterCraft().getProtocolManager().sendServerPacket(p, spawnEntityPacket);
+                getImposterCraft().getProtocolManager().sendServerPacket(p, metadataPacket);
                 for (int i = 0; i < slots.length; i++) {
-                    imposterCraft.getProtocolManager().sendServerPacket(p, getArmorPacket(slots[i], armor[i]));
+                    getImposterCraft().getProtocolManager().sendServerPacket(p, getArmorPacket(slots[i], armor[i]));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
