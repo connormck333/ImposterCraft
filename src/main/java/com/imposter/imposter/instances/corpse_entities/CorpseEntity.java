@@ -57,7 +57,7 @@ public abstract class CorpseEntity {
 
     protected abstract PacketContainer createCorpse();
 
-    protected abstract PacketContainer spawnCorpse(Location deathLocation);
+    protected abstract PacketContainer spawnCorpse();
 
     protected abstract PacketContainer getMetadataPacket();
 

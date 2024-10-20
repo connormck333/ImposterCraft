@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class CorpseEntityV1_21_1 extends CorpseEntity {
+public class CorpseEntityV1_20_1 extends CorpseEntity {
 
     private WrappedGameProfile corpse;
     private final EntityPose pose;
 
-    public CorpseEntityV1_21_1(ImposterCraft imposterCraft, Arena arena, Player player, Location deathLocation, boolean isPlayerOnCameras) {
+    public CorpseEntityV1_20_1(ImposterCraft imposterCraft, Arena arena, Player player, Location deathLocation, boolean isPlayerOnCameras) {
         super(imposterCraft, arena, player, deathLocation);
         this.pose = isPlayerOnCameras ? EntityPose.a : EntityPose.b;
 
@@ -52,7 +52,7 @@ public class CorpseEntityV1_21_1 extends CorpseEntity {
     }
 
     protected PacketContainer spawnCorpse() {
-        PacketContainer spawnEntityPacket = getImposterCraft().getProtocolManager().createPacket(PacketType.Play.Server.SPAWN_ENTITY);
+        PacketContainer spawnEntityPacket = getImposterCraft().getProtocolManager().createPacket(PacketType.Play.Server.NAMED_ENTITY_SPAWN);
         spawnEntityPacket.getUUIDs().write(0, corpse.getUUID());
         spawnEntityPacket.getIntegers().write(0, getId());
 
@@ -64,7 +64,6 @@ public class CorpseEntityV1_21_1 extends CorpseEntity {
         spawnEntityPacket.getBytes()
                 .write(0, (byte) ((deathLocation.getYaw() * 256.0F) / 360.0F))
                 .write(1, (byte) -90);
-        spawnEntityPacket.getEntityTypeModifier().write(0, EntityType.PLAYER);
 
         return spawnEntityPacket;
     }
