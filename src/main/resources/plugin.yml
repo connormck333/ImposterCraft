@@ -53,7 +53,7 @@ commands:
         permission: "imposter.admin"
         permission-message: "You do not have permission to use this command"
       impostercraft door:
-        description: "Set a door location for an arena. Use /wand to set the two locations"
+        description: "Set a door location for an arena. Use /imposter wand to set the two locations"
         usage: "/imposter door <item Id> <door category> <arena Id>"
         permission: "imposter.admin"
         permission-message: "You do not have permission to use this command"

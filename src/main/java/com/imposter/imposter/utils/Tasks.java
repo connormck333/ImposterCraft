@@ -1,8 +1,11 @@
 package com.imposter.imposter.utils;
 
+import lombok.Getter;
+
 import java.util.List;
 import java.util.Random;
 
+@Getter
 public enum Tasks {
     ALIGN_ENGINE("align_engine"),
     ASTEROIDS("asteroids"),
@@ -28,10 +31,6 @@ public enum Tasks {
 
     Tasks(String task) {
         this.task = task;
-    }
-
-    public String getTask() {
-        return this.task;
     }
 
     public String getString() {
