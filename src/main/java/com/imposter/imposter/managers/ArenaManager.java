@@ -2,6 +2,8 @@ package com.imposter.imposter.managers;
 
 import com.imposter.imposter.ImposterCraft;
 import com.imposter.imposter.instances.Arena;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,11 +19,19 @@ import static com.imposter.imposter.utils.Messages.sendInvalidArenaIdMessage;
 public class ArenaManager {
 
     private final ImposterCraft imposterCraft;
+
+    @Getter
+    @Setter
+    private Location mainLobbySpawn;
+
+    @Getter
     private final List<Arena> arenas = new ArrayList<>();
     private final int DOORS_SHUT_TIME;
 
     public ArenaManager(ImposterCraft imposterCraft) {
         this.imposterCraft = imposterCraft;
+        this.mainLobbySpawn = getLobbySpawn();
+
         FileConfiguration config = imposterCraft.getConfig();
         ConfigurationSection section = config.getConfigurationSection("arenas.");
         if (section != null) {
@@ -34,10 +44,6 @@ public class ArenaManager {
         }
 
         this.DOORS_SHUT_TIME = getDoorsShutSeconds();
-    }
-
-    public List<Arena> getArenas() {
-        return arenas;
     }
 
     public Arena getArena(Player player) {
@@ -66,6 +72,14 @@ public class ArenaManager {
         }
 
         getArena(arenaId).addSpawnLocation(location);
+    }
+
+    public void setLobbySpawn(int arenaId, Location lobbySpawn) {
+        if (!doesArenaExist(arenaId)) {
+            return;
+        }
+
+        getArena(arenaId).setArenaLobby(lobbySpawn);
     }
 
     public boolean doesArenaExist(int arenaId) {

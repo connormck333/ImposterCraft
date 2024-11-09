@@ -10,6 +10,8 @@ import com.imposter.imposter.managers.mechanics.VentManager;
 import com.imposter.imposter.managers.players.PlayerManager;
 import com.imposter.imposter.managers.sabotages.*;
 import com.imposter.imposter.utils.GameState;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 
@@ -22,21 +24,35 @@ public class Arena {
 
     private final ImposterCraft imposterCraft;
 
+    @Getter
     private final int id;
-    private final Location arenaLobby;
+
+    @Setter
+    private Location arenaLobby;
     private final List<Location> spawns;
 
+    @Getter
+    @Setter
     private GameState state;
     private Countdown countdown;
+    @Getter
     private Game game;
 
+    @Getter
     private PlayerManager playerManager;
+    @Getter
     private TaskManager taskManager;
+    @Getter
     private MeetingManager meetingManager;
+    @Getter
     private VentManager ventManager;
+    @Getter
     private CamerasManager camerasManager;
+    @Getter
     private CorpseManager corpseManager;
+    @Getter
     private DeathManager deathManager;
+    @Getter
     private SabotageManager sabotageManager;
 
     private final int numImposters;
@@ -107,12 +123,14 @@ public class Arena {
     }
 
     public void reset(boolean kickPlayers) {
-        Location location = getLobbySpawn();
+        Location mainLobbySpawn = imposterCraft.getArenaManager().getMainLobbySpawn();
         for (UUID uuid : playerManager.players()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
-                if (kickPlayers) {
-                    player.teleport(location);
+                if (kickPlayers && mainLobbySpawn != null) {
+                    player.teleport(mainLobbySpawn);
+                } else if (kickPlayers) {
+                    player.teleport(player.getWorld().getSpawnLocation());
                 }
                 playerManager.resetPlayer(player);
                 corpseManager.removeCorpsesForPlayer(player);
@@ -144,7 +162,6 @@ public class Arena {
             UUID uuid = player.getUniqueId();
             if (!meetingManager.hasPlayerCalledMeeting(uuid)) {
                 meetingManager.startEmergencyMeeting(player, false);
-                meetingManager.playerCalledMeeting(uuid);
             } else {
                 sendRedMessageToPlayer(player, "You have already used your 1 emergency meeting call!");
             }
@@ -159,28 +176,12 @@ public class Arena {
         }
     }
 
-    public int getId() {
-        return this.id;
-    }
-
     public List<UUID> getPlayers() {
         return playerManager.players();
     }
 
     public List<UUID> getRemainingPlayers() {
         return playerManager.playersRemaining();
-    }
-
-    public GameState getState() {
-        return this.state;
-    }
-
-    public void setState(GameState state) {
-        this.state = state;
-    }
-
-    public Game getGame() {
-        return game;
     }
 
     public Location getSpawnPoint(int index) {
@@ -219,38 +220,6 @@ public class Arena {
 
     public void addSpawnLocation(Location location) {
         this.spawns.add(location);
-    }
-
-    public PlayerManager getPlayerManager() {
-        return playerManager;
-    }
-
-    public TaskManager getTaskManager() {
-        return taskManager;
-    }
-
-    public MeetingManager getMeetingManager() {
-        return meetingManager;
-    }
-
-    public VentManager getVentManager() {
-        return ventManager;
-    }
-
-    public CamerasManager getCamerasManager() {
-        return camerasManager;
-    }
-
-    public CorpseManager getCorpseManager() {
-        return corpseManager;
-    }
-
-    public DeathManager getDeathManager() {
-        return deathManager;
-    }
-
-    public SabotageManager getSabotageManager() {
-        return sabotageManager;
     }
 
     public DoorManager getDoorManager() {

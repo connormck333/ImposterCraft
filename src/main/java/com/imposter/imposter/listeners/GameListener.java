@@ -6,7 +6,6 @@ import com.imposter.imposter.instances.locations.PlayerVentLocation;
 import com.imposter.imposter.instances.locations.VentLocation;
 import com.imposter.imposter.managers.ArenaManager;
 import com.imposter.imposter.roles.crewmate.CrewmateRoleEnum;
-import com.imposter.imposter.roles.GuesserGui;
 import com.imposter.imposter.roles.crewmate.Deputy;
 import com.imposter.imposter.roles.crewmate.Protector;
 import com.imposter.imposter.roles.crewmate.Sheriff;
@@ -230,6 +229,11 @@ public class GameListener implements Listener {
         if (e.getCurrentItem() != null) {
             Player player = (Player) e.getWhoClicked();
 
+            Arena arena = arenaManager.getArena(player);
+            if (arena == null) {
+                return;
+            }
+
             if (!e.getCurrentItem().hasItemMeta()) {
                 return;
             }
@@ -239,7 +243,7 @@ public class GameListener implements Listener {
                 return;
             }
 
-            if (arenaManager.getArena(player).isMeetingActive()) {
+            if (arena.isMeetingActive()) {
                 if (viewTitle.equals(VOTE_GUI_TITLE)) {
                     voteForPlayer(e);
                     return;

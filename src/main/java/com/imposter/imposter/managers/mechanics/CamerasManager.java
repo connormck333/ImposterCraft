@@ -101,7 +101,7 @@ public class CamerasManager {
     }
 
     public boolean isLocationCamerasJoinLocation(Location location) {
-        return locationEquals(location, camerasJoinLocation);
+        return camerasJoinLocation != null && locationEquals(location, camerasJoinLocation);
     }
 
     public CorpseEntity getEntityOnCameras(int entityId) {

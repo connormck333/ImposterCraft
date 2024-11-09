@@ -10,7 +10,7 @@
     <resources>
       <resource>
         <filtering>true</filtering>
-        <directory>src/imposterCraft/resources</directory>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
     <plugins>
@@ -31,6 +31,28 @@
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>com.comphenix.protocol</pattern>
+                  <shadedPattern>com.imposter.imposter.shaded.protocol</shadedPattern>
+                </relocation>
+              </relocations>
+              <transformers>
+                <transformer>
+                  <mainClass>com.imposter.imposter.ImposterCraft</mainClass>
+                </transformer>
+                <transformer>
+                  <resource>META-INF/MANIFEST.MF</resource>
+                </transformer>
+                <transformer>
+                  <resource>plugin.yml</resource>
+                </transformer>
+                <transformer>
+                  <resource>config.yml</resource>
+                </transformer>
+              </transformers>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -52,14 +74,16 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.21.1-R0.1-SNAPSHOT</version>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.34</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
   <properties>
-    <java.version>21</java.version>
+    <maven.compiler.target>18</maven.compiler.target>
+    <java.version>18</java.version>
+    <maven.compiler.source>18</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

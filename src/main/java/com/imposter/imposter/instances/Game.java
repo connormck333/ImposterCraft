@@ -68,24 +68,24 @@ public class Game {
     }
 
     public void endGame(boolean impostersWin) {
-//        arena.sendMessage(BOLD_YELLOW + "Game Over");
-//        if (impostersWin) {
-//            arena.sendMessage(BOLD_RED + "Imposters Win!");
-//        } else {
-//            arena.sendMessage(BOLD_GREEN + "Crewmates Win!");
-//        }
-//
-//        for (UUID uuid : arena.getPlayers()) {
-//            Player player = Bukkit.getPlayer(uuid);
-//            if (player != null) {
-//                player.setGameMode(GameMode.SURVIVAL);
-//                player.getInventory().clear();
-//                player.teleport(getLobbySpawn());
-//            }
-//        }
-//
-//        arena.setState(GameState.END_GAME);
-//        Bukkit.getScheduler().runTaskLater(imposterCraft, () -> arena.reset(true), 200L);
+        arena.sendMessage(BOLD_YELLOW + "Game Over");
+        if (impostersWin) {
+            arena.sendMessage(BOLD_RED + "Imposters Win!");
+        } else {
+            arena.sendMessage(BOLD_GREEN + "Crewmates Win!");
+        }
+
+        for (UUID uuid : arena.getPlayers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                player.setGameMode(GameMode.SURVIVAL);
+                player.getInventory().clear();
+                player.teleport(getLobbySpawn());
+            }
+        }
+
+        arena.setState(GameState.END_GAME);
+        Bukkit.getScheduler().runTaskLater(imposterCraft, () -> arena.reset(true), 200L);
     }
 
     public void giveItems() {

@@ -1,8 +1,7 @@
 name: Imposter
 version: '1.0-SNAPSHOT'
 main: com.imposter.imposter.ImposterCraft
-api-version: '1.19'
-depend: [ProtocolLib]
+api-version: '1.20'
 commands:
   impostercraft:
     description: "Main command for the ImposterCraft mini game"
@@ -34,8 +33,8 @@ commands:
         permission: "imposter.admin"
         permission-message: "You do not have permission to use this command"
       impostercraft lobby:
-        description: "Set the lobby spawn point for an arena"
-        usage: "/imposter lobby <arena Id>"
+        description: "Set the lobby spawn point for an arena or the main lobby"
+        usage: "/imposter lobby {<arena Id> / 'main'}"
         permission: "imposter.admin"
         permission-message: "You do not have permission to use this command"
       impostercraft reset:
@@ -55,7 +54,7 @@ commands:
         permission-message: "You do not have permission to use this command"
       impostercraft door:
         description: "Set a door location for an arena. Use /wand to set the two locations"
-        usage: "/imposter door <item Id> <door title> <arena Id>"
+        usage: "/imposter door <item Id> <door category> <arena Id>"
         permission: "imposter.admin"
         permission-message: "You do not have permission to use this command"
       impostercraft vent:

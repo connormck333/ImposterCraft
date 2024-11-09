@@ -21,10 +21,11 @@ import static com.imposter.imposter.utils.ConfigManager.*;
 import static com.imposter.imposter.utils.Constants.*;
 import static com.imposter.imposter.utils.GuiUtils.getMeta;
 import static com.imposter.imposter.utils.Messages.*;
+import static com.imposter.imposter.utils.PermissionUtils.doesPlayerHavePermissions;
 
 public class ImposterCommand implements CommandExecutor {
 
-    private ImposterCraft imposterCraft;
+    private final ImposterCraft imposterCraft;
 
     public ImposterCommand(ImposterCraft imposterCraft) {
         this.imposterCraft = imposterCraft;
@@ -32,6 +33,11 @@ public class ImposterCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        if (args[0].equalsIgnoreCase("help")) {
+            new HelpCommand(sender).doCommand();
+            return true;
+        }
 
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -85,7 +91,11 @@ public class ImposterCommand implements CommandExecutor {
             } else if (args.length == 2 && args[0].equalsIgnoreCase("spawn")) {
                 saveArenaSpawn(player, args[1], false);
             } else if (args.length == 2 && args[0].equalsIgnoreCase("lobby")) {
-                saveArenaSpawn(player, args[1], true);
+                if (args[1].equalsIgnoreCase("main")) {
+                    saveLobbySpawn(player);
+                } else {
+                    saveArenaSpawn(player, args[1], true);
+                }
             } else if (args.length == 2 && args[0].equalsIgnoreCase("reset")) {
                 resetArena(player, args[1]);
             } else if (args.length == 2 && args[0].equalsIgnoreCase("meeting")) {
@@ -245,19 +255,41 @@ public class ImposterCommand implements CommandExecutor {
         }
 
         Location location = player.getLocation();
-        boolean success;
         if (lobbySpawn) {
-            success = saveArenaLobbyLocation(arenaId, location);
+            boolean success = saveArenaLobbyLocation(arenaId, location);
+            if (!success) {
+                sendRedMessageToPlayer(player, "There was an error saving spawn location.");
+            } else {
+                sendGreenMessageToPlayer(player, "Spawn location saved!");
+                imposterCraft.getArenaManager().setLobbySpawn(arenaId, location);
+            }
         } else {
-            success = saveArenaSpawnLocation(arenaId, location);
+            boolean success = saveArenaSpawnLocation(arenaId, location);
+            if (!success) {
+                sendRedMessageToPlayer(player, "There was an error saving spawn location.");
+            } else {
+                sendGreenMessageToPlayer(player, "Spawn location saved!");
+                imposterCraft.getArenaManager().addSpawnToArena(arenaId, location);
+            }
+        }
+    }
+
+    private void saveLobbySpawn(Player player) {
+        if (!doesPlayerHavePermissions(player)) {
+            sendInvalidPermsMessageToPlayer(player);
+            return;
         }
 
+        Location location = player.getLocation();
+
+        boolean success = saveMainLobbyLocation(location);
         if (!success) {
-            sendRedMessageToPlayer(player, "There was an error saving spawn location.");
-        } else {
-            imposterCraft.getArenaManager().addSpawnToArena(arenaId, location);
-            sendGreenMessageToPlayer(player, "Spawn location saved!");
+            sendRedMessageToPlayer(player, "There was an error saving main lobby location.");
+            return;
         }
+
+        sendGreenMessageToPlayer(player, "Main lobby location saved!");
+        imposterCraft.getArenaManager().setMainLobbySpawn(location);
     }
 
     private void resetArena(Player player, String arenaIdStr) {
@@ -283,15 +315,6 @@ public class ImposterCommand implements CommandExecutor {
         }
 
         player.getInventory().addItem(getWand());
-    }
-
-    private boolean doesPlayerHavePermissions(Player player) {
-        if (player.isOp() || player.hasPermission("imposter.admin")) {
-            return true;
-        }
-
-        sendInvalidPermsMessageToPlayer(player);
-        return false;
     }
 
     private void invalidUsage(Player player) {

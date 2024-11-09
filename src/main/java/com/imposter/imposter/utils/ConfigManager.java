@@ -13,6 +13,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.imposter.imposter.utils.Utils.locationEquals;
+
 public class ConfigManager {
 
     private static ImposterCraft imposterCraft;
@@ -101,12 +103,13 @@ public class ConfigManager {
                 if (section.getBoolean(role)) {
                     try {
                         enabledRoles.add(ImposterRoleEnum.fromString(role));
-                    } catch (IllegalArgumentException ignored) {}
+                    } catch (IllegalArgumentException ignored) {
+                    }
                 }
             }
         }
 
-        System.out.println(enabledRoles);
+        System.out.println("Enabled imposter roles: " + enabledRoles);
 
         return enabledRoles;
     }
@@ -128,7 +131,7 @@ public class ConfigManager {
             }
         }
 
-        System.out.println(enabledRoles);
+        System.out.println("Enabled crewmate roles: " + enabledRoles);
 
         return enabledRoles;
     }
@@ -191,6 +194,16 @@ public class ConfigManager {
 
     public static void removeTaskLocationFromConfig(Location location) {
         for (int arenaId : getArenaIds()) {
+            Location meetingLocation = getMeetingSignLocation(arenaId);
+            if (meetingLocation != null && locationEquals(location, meetingLocation)) {
+                deleteMeetingLocation(arenaId);
+            }
+
+            Location camerasLocation = getCameraJoinLocation(arenaId);
+            if (camerasLocation != null && locationEquals(location, camerasLocation)) {
+                deleteCamerasJoinLocation(arenaId);
+            }
+
             List<TaskLocation> taskLocations = getTaskLocations(arenaId);
             for (TaskLocation taskLocation : taskLocations) {
                 if (taskLocation.equals(location)) {
@@ -303,7 +316,13 @@ public class ConfigManager {
             section = config.createSection(path);
         }
 
-        int id = getTaskLocations(arenaId).size();
+        int id = 0;
+        for (TaskLocation task : getTaskLocations(arenaId)) {
+            if (task.getId() > id) {
+                id = task.getId();
+            }
+        }
+        id++;
         section = section.createSection(String.valueOf(id));
 
         Location location = taskLocation.getLocation();
@@ -348,6 +367,23 @@ public class ConfigManager {
         }
 
         return true;
+    }
+
+    public static boolean saveMainLobbyLocation(Location location) {
+        try {
+            String path = "lobby-spawn";
+            ConfigurationSection section = config.getConfigurationSection(path);
+            if (section == null) {
+                section = config.createSection(path);
+            }
+
+            saveLocation(section, location);
+            imposterCraft.saveConfig();
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static boolean saveArenaLobbyLocation(int arenaId, Location location) {
@@ -441,6 +477,16 @@ public class ConfigManager {
         deleteLocation(path, ventId);
     }
 
+    private static void deleteMeetingLocation(int arenaId) {
+        String key = "meeting-sign-location";
+        deleteLocation(arenaId, key);
+    }
+
+    private static void deleteCamerasJoinLocation(int arenaId) {
+        String key = "camera-join-location";
+        deleteLocation(arenaId, key);
+    }
+
     private static void deleteLocation(String path, int locationId) {
         ConfigurationSection section = config.getConfigurationSection(path);
 
@@ -449,6 +495,17 @@ public class ConfigManager {
         }
 
         section.set(String.valueOf(locationId), null);
+        imposterCraft.saveConfig();
+    }
+
+    private static void deleteLocation(int arenaId, String key) {
+        ConfigurationSection section = config.getConfigurationSection("arenas." + arenaId);
+
+        if (section == null) {
+            return;
+        }
+
+        section.set(key, null);
         imposterCraft.saveConfig();
     }
 

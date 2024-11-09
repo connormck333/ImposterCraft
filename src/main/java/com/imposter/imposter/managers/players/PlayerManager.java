@@ -5,6 +5,7 @@ import com.imposter.imposter.instances.Arena;
 import com.imposter.imposter.instances.Outfit;
 import com.imposter.imposter.utils.Colors;
 import com.imposter.imposter.utils.GameState;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,15 +18,18 @@ import static com.imposter.imposter.utils.Messages.sendTitleToPlayer;
 
 public class PlayerManager {
 
-    private ImposterCraft imposterCraft;
-    private Arena arena;
+    private final ImposterCraft imposterCraft;
+    private final Arena arena;
 
     private final List<UUID> players;
+    @Getter
     private List<UUID> imposters = new ArrayList<>();
     private List<UUID> playersRemaining;
     private final Map<UUID, Colors> playerColors;
 
+    @Getter
     private int crewmateRemainingCount;
+    @Getter
     private int imposterRemainingCount;
 
     public PlayerManager(ImposterCraft imposterCraft, Arena arena) {
@@ -119,10 +123,6 @@ public class PlayerManager {
         return playersRemaining;
     }
 
-    public List<UUID> getImposters() {
-        return imposters;
-    }
-
     public Colors getPlayerColor(UUID uuid) {
         return playerColors.get(uuid);
     }
@@ -149,14 +149,6 @@ public class PlayerManager {
         } while (isPlayerImposter(uuid));
 
         return uuid;
-    }
-
-    public int getCrewmateRemainingCount() {
-        return crewmateRemainingCount;
-    }
-
-    public int getImposterRemainingCount() {
-        return imposterRemainingCount;
     }
 
     public void clear() {

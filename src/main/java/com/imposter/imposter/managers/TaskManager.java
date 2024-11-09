@@ -9,6 +9,7 @@ import com.imposter.imposter.tasks.*;
 import com.imposter.imposter.tasks.instances.AssignedTask;
 import com.imposter.imposter.utils.ConfigManager;
 import com.imposter.imposter.utils.Tasks;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -27,7 +28,9 @@ public class TaskManager {
     private final Map<UUID, List<AssignedTask>> playerTasks;
     private final Map<Location, String> taskLocations;
     private final Map<UUID, PlayerTask> openTasks;
+    @Getter
     private final int numTasksPerPlayer;
+    @Getter
     private int completedTasksCount;
 
     public TaskManager(ImposterCraft imposterCraft, Arena arena) {
@@ -99,14 +102,6 @@ public class TaskManager {
 
     public boolean areAllTasksCompleted() {
         return completedTasksCount == ((arena.getPlayers().size() - arena.getImposters().size()) * numTasksPerPlayer);
-    }
-
-    public int getNumTasksPerPlayer() {
-        return numTasksPerPlayer;
-    }
-
-    public int getCompletedTasksCount() {
-        return completedTasksCount;
     }
 
     public AssignedTask generateRandomTask(Player player, List<AssignedTask> tasks) {

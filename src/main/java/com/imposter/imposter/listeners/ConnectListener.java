@@ -14,19 +14,18 @@ import org.bukkit.potion.PotionEffectType;
 
 public class ConnectListener implements Listener {
 
-    private ImposterCraft imposterCraft;
-    private Location lobbySpawn;
+    private final ImposterCraft imposterCraft;
 
     public ConnectListener(ImposterCraft imposterCraft) {
         this.imposterCraft = imposterCraft;
-        this.lobbySpawn = ConfigManager.getLobbySpawn();
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        if (this.lobbySpawn != null) {
-            player.teleport(this.lobbySpawn);
+        Location mainLobbySpawn = imposterCraft.getArenaManager().getMainLobbySpawn();
+        if (mainLobbySpawn != null) {
+            player.teleport(mainLobbySpawn);
         }
         player.setInvisible(false);
         player.getInventory().clear();

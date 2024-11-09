@@ -1,9 +1,11 @@
 package com.imposter.imposter.utils;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 
+@Getter
 public enum Colors {
     RED("RED"),
     ORANGE("ORANGE"),
@@ -22,10 +24,6 @@ public enum Colors {
 
     Colors(String color) {
         this.color = color;
-    }
-
-    public String getColor() {
-        return this.color;
     }
 
     public ChatColor getChatColor() {
@@ -99,18 +97,18 @@ public enum Colors {
 
     public static Colors getColorByConcrete(Material material) {
         return switch (material) {
-            case Material.RED_CONCRETE -> RED;
-            case Material.LIGHT_BLUE_CONCRETE -> BLUE;
-            case Material.BLACK_CONCRETE -> BLACK;
-            case Material.GREEN_CONCRETE -> GREEN;
-            case Material.ORANGE_CONCRETE -> ORANGE;
-            case Material.PURPLE_CONCRETE -> PURPLE;
-            case Material.CYAN_CONCRETE -> AQUA;
-            case Material.GRAY_CONCRETE -> GRAY;
-            case Material.PINK_CONCRETE -> PINK;
-            case Material.BLUE_CONCRETE -> DARK_BLUE;
-            case Material.BROWN_CONCRETE -> BROWN;
-            case Material.WHITE_CONCRETE -> WHITE;
+            case RED_CONCRETE -> RED;
+            case LIGHT_BLUE_CONCRETE -> BLUE;
+            case BLACK_CONCRETE -> BLACK;
+            case GREEN_CONCRETE -> GREEN;
+            case ORANGE_CONCRETE -> ORANGE;
+            case PURPLE_CONCRETE -> PURPLE;
+            case CYAN_CONCRETE -> AQUA;
+            case GRAY_CONCRETE -> GRAY;
+            case PINK_CONCRETE -> PINK;
+            case BLUE_CONCRETE -> DARK_BLUE;
+            case BROWN_CONCRETE -> BROWN;
+            case WHITE_CONCRETE -> WHITE;
             default -> null;
         };
     }

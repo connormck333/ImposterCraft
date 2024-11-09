@@ -85,6 +85,7 @@ public class MeetingManager {
             );
         }
 
+        playerCalledMeeting(player.getUniqueId());
         game.getTaskBar().updateTaskBar();
         meetingCountdown.start();
     }
