@@ -20,6 +20,7 @@ import com.imposter.imposter.instances.locations.TaskLocation;
 import com.imposter.imposter.utils.Colors;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -30,6 +31,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
@@ -63,6 +65,7 @@ import static com.imposter.imposter.utils.Constants.*;
 import static com.imposter.imposter.utils.Cooldowns.*;
 import static com.imposter.imposter.utils.GuiUtils.isWool;
 import static com.imposter.imposter.utils.Messages.*;
+import static com.imposter.imposter.utils.SignUtils.isOakSign;
 import static com.imposter.imposter.utils.Utils.removeSquareBrackets;
 
 public class GameListener implements Listener {
@@ -70,7 +73,7 @@ public class GameListener implements Listener {
     private final ImposterCraft imposterCraft;
     private final ArenaManager arenaManager;
 
-    private Map<UUID, Long> interactCooldowns;
+    private final Map<UUID, Long> interactCooldowns;
 
     public GameListener(ImposterCraft imposterCraft, ArenaManager arenaManager) {
         this.imposterCraft = imposterCraft;
@@ -82,8 +85,36 @@ public class GameListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         ItemStack item = e.getItem();
+        Block clickedBlock = e.getClickedBlock();
         Player player = e.getPlayer();
         Arena arena = arenaManager.getArena(player);
+
+        if (clickedBlock != null && clickedBlock.getState() instanceof Sign sign) {
+            String line1 = sign.getLine(0);
+
+            if (line1.trim().equalsIgnoreCase("[Imposter]")) {
+                int arenaId;
+                try {
+                    String line2 = sign.getLine(1);
+                    arenaId = Integer.parseInt(line2);
+                } catch (Exception ignored) {
+                    return;
+                }
+
+                arenaManager.playerJoinArena(player, arenaId);
+                return;
+            }
+        }
+
+        // Check for wand interaction
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && item != null
+                && item.getType() == Material.WOODEN_HOE) {
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()
+                    && item.getItemMeta().getDisplayName().equals(WAND_TITLE)) {
+                handleWandRightClick(e);
+                return;
+            }
+        }
 
         if (arena == null) {
             return;
@@ -128,10 +159,10 @@ public class GameListener implements Listener {
         }
 
         // Check for task, vent or meeting interaction
-        Block clickedBlock = e.getClickedBlock();
         if (clickedBlock != null) {
             Material material = clickedBlock.getType();
             Location blockLocation = e.getClickedBlock().getLocation();
+
             if (isOakSign(material)) {
                 if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     e.setCancelled(true);
@@ -140,16 +171,6 @@ public class GameListener implements Listener {
                 return;
             } else if (isIronTrapdoor(material)) {
                 arena.getVentManager().handleVentClick(player, blockLocation);
-                return;
-            }
-        }
-
-        // Check for wand interaction
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && item != null
-                && item.getType() == Material.WOODEN_HOE) {
-            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()
-                    && item.getItemMeta().getDisplayName().equals(WAND_TITLE)) {
-                handleWandRightClick(e);
                 return;
             }
         }
@@ -377,6 +398,15 @@ public class GameListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
         ItemStack item = e.getItemInHand();
+        Player player = e.getPlayer();
+
+        if (arenaManager.getArena(player) != null) {
+            if (e.getBlockPlaced().getType() != Material.TNT) {
+                e.setCancelled(true);
+                return;
+            }
+        }
+
         if (!isPermittedPlaceBlock(e.getBlockPlaced().getType())) {
             if (!e.getPlayer().isOp()) {
                 e.setCancelled(true);
@@ -404,6 +434,7 @@ public class GameListener implements Listener {
                 arena.getTaskManager().addTaskLocation(blockLocation, taskCommand);
 
                 saveTaskLocation(arenaId, new TaskLocation(blockLocation, taskCommand));
+                sendGreenMessageToPlayer(player, "Saved task location!");
 
             } else if (displayName.equals(MEETING_SIGN_TITLE)) {
 
@@ -418,6 +449,7 @@ public class GameListener implements Listener {
                 arena.getMeetingManager().setEmergencyMeetingSignLocation(meetingSignLocation);
 
                 saveArenaMeetingSignLocation(arenaId, meetingSignLocation);
+                sendGreenMessageToPlayer(player, "Saved meeting start location!");
 
             } else if (displayName.equals(VENT_TRAPDOOR_TITLE)) {
 
@@ -437,6 +469,8 @@ public class GameListener implements Listener {
                 int id = saveVentLocation(arenaId, location, ventCategory);
                 arena.getVentManager().addVentLocation(ventCategory, new VentLocation(location, ventCategory, id));
 
+                sendGreenMessageToPlayer(player, "Saved vent location!");
+
             } else if (displayName.equals(CAMERAS_ITEM_TITLE)) {
 
                 int arenaId = Integer.parseInt(getLoreSplit(meta.getLore())[0]);
@@ -450,6 +484,8 @@ public class GameListener implements Listener {
                 arena.getCamerasManager().addCameraJoinLocation(location);
                 saveArenaCameraJoinLocation(arenaId, location);
 
+                sendGreenMessageToPlayer(player, "Saved cameras join location!");
+
             } else if (displayName.equals(BOMB_ITEM)) {
 
                 if (item.getType() != Material.TNT) {
@@ -458,13 +494,14 @@ public class GameListener implements Listener {
 
                 e.setCancelled(true);
 
-                Player player = e.getPlayer();
                 UUID uuid = player.getUniqueId();
                 Arena arena = imposterCraft.getArenaManager().getArena(player);
                 if (!arena.getDeathManager().canPlayerKill(uuid)) {
                     sendWaitForCooldownMessage(player, arena.getDeathManager().getPlayerCooldownRemaining(uuid));
                     return;
-                } else if (arena.getGame().deputy().isPlayerHandcuffed(uuid)) {
+                }
+                Deputy deputy = arena.getGame().deputy();
+                if (deputy != null && deputy.isPlayerHandcuffed(uuid)) {
                     sendHandcuffMessage(player);
                     return;
                 }
@@ -494,9 +531,9 @@ public class GameListener implements Listener {
         Location blockLocation = e.getBlock().getLocation();
 
         if (isOakSign(material)) {
-            removeTaskLocationFromConfig(blockLocation);
+            removeTaskLocationFromConfig(e.getPlayer(), blockLocation);
         } else if (isIronTrapdoor(material)) {
-            removeVentLocationFromConfig(blockLocation);
+            removeVentLocationFromConfig(e.getPlayer(), blockLocation);
         }
     }
 
@@ -570,6 +607,15 @@ public class GameListener implements Listener {
         e.setCancelled(true);
     }
 
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent e) {
+        if (e.getEntity() instanceof Player player) {
+            if (arenaManager.getArena(player) != null) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
     private void onlyCancelIfMovedBlock(PlayerMoveEvent e) {
         if (e.getTo() != null) {
             if (didPlayerMove(e.getFrom(), e.getTo())) {
@@ -585,10 +631,6 @@ public class GameListener implements Listener {
 
     private boolean didPlayerMove(Location from, Location to) {
         return from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ();
-    }
-
-    private boolean isOakSign(Material material) {
-        return material == Material.OAK_SIGN || material == Material.OAK_WALL_SIGN || material == Material.OAK_HANGING_SIGN || material == Material.OAK_WALL_HANGING_SIGN;
     }
 
     private boolean isIronTrapdoor(Material material) {
@@ -859,9 +901,7 @@ public class GameListener implements Listener {
             player.closeInventory();
         }
 
-        if (arena.getMeetingManager().hasAllPlayersVoted()) {
-            arena.getMeetingManager().endEmergencyMeeting();
-        }
+        arena.getMeetingManager().endMeetingIfAllPlayersVoted();
     }
 
     private void shutDoor(InventoryClickEvent e) {
@@ -896,16 +936,13 @@ public class GameListener implements Listener {
         PlayerVentLocation ventLocation = arena.getVentManager().getPlayerVentCategory(player.getUniqueId());
         String category = ventLocation.getVentLocation().getCategory();
         List<VentLocation> ventLocations = arena.getVentManager().getVentLocationsByCategory(category);
-        System.out.println("Size:" + ventLocations.size());
 
         int index = ventLocation.getNextIndex();
         VentLocation nextLocation;
         if (index == ventLocations.size() - 1) {
-            System.out.println("back to first: " + index);
             nextLocation = ventLocations.getFirst();
             ventLocation.setNextIndex(0);
         } else {
-            System.out.println("next: " + index);
             index++;
             nextLocation = ventLocations.get(index);
             ventLocation.setNextIndex(index);
@@ -921,7 +958,6 @@ public class GameListener implements Listener {
         }
 
         Player player = (Player) e.getWhoClicked();
-        UUID uuid = player.getUniqueId();
         Arena arena = arenaManager.getArena(player);
         Guesser guesser = arena.getGame().guesser();
         ItemStack item = e.getCurrentItem();

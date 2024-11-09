@@ -91,13 +91,22 @@ public class TaskManager {
 
     public boolean areAllTaskLocationsSet() {
         Set<Tasks> existingTasks = new HashSet<>();
+        int reactorCount = 0;
+        int oxygenCount = 0;
+
         for (Location location : taskLocations.keySet()) {
             try {
-                existingTasks.add(Tasks.valueOf(taskLocations.get(location).toUpperCase()));
+                Tasks task = Tasks.valueOf(taskLocations.get(location).toUpperCase());
+                existingTasks.add(task);
+                if (task == REACTOR_MELTDOWN) {
+                    reactorCount++;
+                } else if (task == OXYGEN_DEPLETION) {
+                    oxygenCount++;
+                }
             } catch (Exception ignore) {}
         }
 
-        return existingTasks.containsAll(List.of(Tasks.values()));
+        return existingTasks.containsAll(List.of(Tasks.values())) && reactorCount > 1 && oxygenCount > 1;
     }
 
     public boolean areAllTasksCompleted() {

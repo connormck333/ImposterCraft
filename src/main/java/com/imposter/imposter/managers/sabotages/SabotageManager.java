@@ -2,53 +2,36 @@ package com.imposter.imposter.managers.sabotages;
 
 import com.imposter.imposter.ImposterCraft;
 import com.imposter.imposter.instances.Arena;
+import com.imposter.imposter.utils.ConfigManager;
+import lombok.Getter;
 
 public class SabotageManager {
 
-    private Arena arena;
-
-    private DoorManager doorManager;
+    @Getter
+    private final DoorManager doorManager;
+    @Getter
     private final ReactorManager reactorManager;
+    @Getter
     private final OxygenManager oxygenManager;
+    @Getter
     private final LightsManager lightsManager;
 
+    @Getter
     private final int sabotageCooldown;
     private Long sabotageLastUse;
 
     public SabotageManager(ImposterCraft imposterCraft, Arena arena) {
-        this.arena = arena;
-
         this.doorManager = new DoorManager(arena.getId());
         this.reactorManager = new ReactorManager(imposterCraft, arena);
         this.oxygenManager = new OxygenManager(imposterCraft, arena);
         this.lightsManager = new LightsManager(arena);
 
-        this.sabotageCooldown = getSabotageCooldown() * 1000;
+        this.sabotageCooldown = ConfigManager.getSabotageCooldown() * 1000;
         this.sabotageLastUse = 0L;
-    }
-
-    public DoorManager getDoorManager() {
-        return doorManager;
-    }
-
-    public ReactorManager getReactorManager() {
-        return reactorManager;
-    }
-
-    public OxygenManager getOxygenManager() {
-        return oxygenManager;
-    }
-
-    public LightsManager getLightsManager() {
-        return lightsManager;
     }
 
     public void setSabotageLastUse() {
         this.sabotageLastUse = System.currentTimeMillis();
-    }
-
-    public int getSabotageCooldown() {
-        return sabotageCooldown;
     }
 
     public boolean isSabotageAvailable() {

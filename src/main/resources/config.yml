@@ -1,7 +1,7 @@
 #
 # * Settings *
 #
-# Required players to start a round
+# Required players to start a round - Maximum 12
 required-players: 1
 
 # Seconds from when required amount of players join before game starts
@@ -10,7 +10,7 @@ countdown-seconds: 5
 # Allow chat in lobby
 main-lobby-chat-enabled: false
 
-# Set to true to enable 2 imposters when there are 6 or more players
+# Set to true to enable 2 imposters when there are 7 or more players
 two-imposters-enabled: true
 
 # Set number of seconds for emergency meetings. Emergency meetings will automatically finish once all players have voted.
@@ -60,3 +60,8 @@ crewmate-roles:
   lighter: true
   guesser: true
   protector: true
+
+#
+#
+#
+#

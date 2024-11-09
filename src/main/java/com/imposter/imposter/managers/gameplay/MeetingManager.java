@@ -64,10 +64,19 @@ public class MeetingManager {
         List<UUID> players = arena.getPlayers();
 
         for (int i = 0; i < players.size(); i++) {
+            UUID uuid = players.get(i);
             Player p = Bukkit.getPlayer(players.get(i));
             if (p == null) {
                 continue;
             }
+
+            if (arena.getCamerasManager().isPlayerOnCameras(uuid)) {
+                arena.getCamerasManager().playerExitCameras(p);
+            }
+            if (arena.getVentManager().isPlayerInVent(uuid)) {
+                arena.getVentManager().playerExitVent(p);
+            }
+
             arena.getTaskManager().clearPlayerTasks(p);
             arena.getPlayerManager().clearHotbar(p);
             p.teleport(arena.getSpawnPoint(i));
@@ -174,6 +183,14 @@ public class MeetingManager {
             this.skipVoteCount++;
         }
         this.voters.add(voter);
+
+        endMeetingIfAllPlayersVoted();
+    }
+
+    public void endMeetingIfAllPlayersVoted() {
+        if (arena.getMeetingManager().hasAllPlayersVoted()) {
+            endEmergencyMeeting();
+        }
     }
 
     public boolean hasPlayerVoted(UUID uuid) {

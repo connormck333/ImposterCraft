@@ -5,6 +5,7 @@ import com.imposter.imposter.roles.crewmate.CrewmateRole;
 import com.imposter.imposter.roles.crewmate.CrewmateRoleEnum;
 import com.imposter.imposter.roles.GuesserGui;
 import com.imposter.imposter.roles.Role;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,9 @@ public class Guesser extends ImposterRole {
     private static final String DESCRIPTION = "Guess the crewmates roles to kill them!";
 
     private final Arena arena;
+    @Getter
     private GuesserGui gui;
+    @Getter
     private UUID guessedPlayer;
 
     public Guesser(Arena arena, UUID guesser) {
@@ -41,32 +44,34 @@ public class Guesser extends ImposterRole {
         gui.setupGuiForRoles();
     }
 
-    public UUID getGuessedPlayer() {
-        return guessedPlayer;
-    }
-
-    public GuesserGui getGui() {
-        return gui;
-    }
-
     public void guessPlayer(Player guesser, Player guessedPlayer, CrewmateRoleEnum guessedRole) {
         Role role = arena.getGame().getCrewmateManager().rolesManager().getRole(guessedPlayer.getUniqueId());
+        if (role == null) {
+            wrongGuess(guesser);
+            return;
+        }
+
         CrewmateRoleEnum actualRole = ((CrewmateRole) role).getCrewmateRole();
         if (actualRole == guessedRole) {
             arena.getDeathManager().killPlayerWithoutBody(guessedPlayer);
             String displayName = guessedPlayer.getDisplayName();
             arena.sendMessage(displayName + " was killed!", true);
             arena.sendMessage(displayName + "'s role was guessed by the guesser!", true);
+            arena.getGame().isGameOver();
         } else {
-            arena.getDeathManager().killPlayerWithoutBody(guesser);
-            String displayName = guesser.getDisplayName();
-            arena.sendMessage(displayName + " was killed!", true);
-            arena.sendMessage(displayName + " guessed and got it wrong!", true);
+            wrongGuess(guesser);
         }
     }
 
     public void giveGuesserBook(Player player) {
         player.getInventory().setItem(1, getGuesserItem());
+    }
+
+    private void wrongGuess(Player guesser) {
+        arena.getDeathManager().killPlayerWithoutBody(guesser);
+        String displayName = guesser.getDisplayName();
+        arena.sendMessage(displayName + " was killed!", true);
+        arena.sendMessage(displayName + " guessed and got it wrong!", true);
     }
 
     private static ItemStack getGuesserItem() {

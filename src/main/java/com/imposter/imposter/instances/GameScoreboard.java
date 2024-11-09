@@ -2,7 +2,9 @@ package com.imposter.imposter.instances;
 
 import com.imposter.imposter.managers.players.CrewmateManager;
 import com.imposter.imposter.managers.players.ImposterManager;
+import com.imposter.imposter.roles.Role;
 import com.imposter.imposter.roles.imposter.BountyHunter;
+import com.imposter.imposter.roles.imposter.ImposterRole;
 import com.imposter.imposter.tasks.instances.AssignedTask;
 import com.imposter.imposter.utils.Tasks;
 import org.bukkit.Bukkit;
@@ -60,14 +62,24 @@ public class GameScoreboard {
         String roleString = ChatColor.YELLOW + "You are the ";
         if (isImposter) {
             ImposterManager imposterManager = arena.getGame().getImposterManager();
-            objective.getScore(roleString + ChatColor.RED + imposterManager.rolesManager().getRole(uuid).title()).setScore(19);
-            BountyHunter bountyHunter = imposterManager.rolesManager().bountyHunter();
-            if (bountyHunter != null && bountyHunter.is(uuid)) {
-                bountyHunter.setBountyHunterKill(objective);
+            Role role = imposterManager.rolesManager().getRole(uuid);
+            if (role != null) {
+                objective.getScore(roleString + ChatColor.RED + role.title()).setScore(19);
+                BountyHunter bountyHunter = imposterManager.rolesManager().bountyHunter();
+                if (bountyHunter != null && bountyHunter.is(uuid)) {
+                    bountyHunter.setBountyHunterKill(objective);
+                }
+            } else {
+                objective.getScore(ChatColor.YELLOW + "You are " + ChatColor.RED + "Imposter").setScore(19);
             }
         } else {
             CrewmateManager crewmateManager = arena.getGame().getCrewmateManager();
-            objective.getScore(roleString + ChatColor.GREEN + crewmateManager.rolesManager().getRole(uuid).title()).setScore(19);
+            Role role = crewmateManager.rolesManager().getRole(uuid);
+            if (role != null) {
+                objective.getScore(roleString + ChatColor.GREEN + role.title()).setScore(19);
+            } else {
+                objective.getScore(ChatColor.YELLOW + "You are " + ChatColor.GREEN + "Crewmate").setScore(19);
+            }
         }
 
         objective.getScore(ChatColor.GREEN + divider).setScore(17);

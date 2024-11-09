@@ -1,12 +1,15 @@
 package com.imposter.imposter.instances;
 
-import com.imposter.imposter.instances.corpse_entities.CorpseEntity;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 
+@Getter
 public class PlayerCameras {
 
-    private Location locationBeforeCameras;
-    private CorpseEntity corpseEntity;
+    private final Location locationBeforeCameras;
+    private final CorpseEntity corpseEntity;
+    @Setter
     private int currentCameraIndex;
 
     public PlayerCameras(Location locationBeforeCameras, CorpseEntity corpseEntity) {
@@ -15,19 +18,4 @@ public class PlayerCameras {
         this.corpseEntity = corpseEntity;
     }
 
-    public int getCurrentCameraIndex() {
-        return currentCameraIndex;
-    }
-
-    public Location getLocationBeforeCameras() {
-        return locationBeforeCameras;
-    }
-
-    public CorpseEntity getCorpseEntity() {
-        return corpseEntity;
-    }
-
-    public void setCurrentCameraIndex(int nextIndex) {
-        this.currentCameraIndex = nextIndex;
-    }
 }

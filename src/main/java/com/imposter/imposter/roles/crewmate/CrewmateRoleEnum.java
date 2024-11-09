@@ -1,5 +1,8 @@
 package com.imposter.imposter.roles.crewmate;
 
+import lombok.Getter;
+
+@Getter
 public enum CrewmateRoleEnum {
     MAYOR("mayor"),
     ENGINEER("engineer"),
@@ -12,10 +15,6 @@ public enum CrewmateRoleEnum {
 
     CrewmateRoleEnum(String role) {
         this.role = role;
-    }
-
-    public String getRole() {
-        return this.role;
     }
 
     public static CrewmateRoleEnum fromString(String role) {

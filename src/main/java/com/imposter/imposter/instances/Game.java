@@ -10,6 +10,7 @@ import com.imposter.imposter.roles.imposter.Camouflager;
 import com.imposter.imposter.roles.imposter.Guesser;
 import com.imposter.imposter.utils.Colors;
 import com.imposter.imposter.utils.GameState;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -27,10 +28,14 @@ public class Game {
     private final ImposterCraft imposterCraft;
     private final Arena arena;
 
+    @Getter
     private final ImposterManager imposterManager;
+    @Getter
     private final CrewmateManager crewmateManager;
 
+    @Getter
     private final TaskBar taskBar;
+    @Getter
     private final GameScoreboard gameScoreboard;
 
     public Game(ImposterCraft imposterCraft, Arena arena) {
@@ -144,7 +149,7 @@ public class Game {
     }
 
     public boolean isGameOver() {
-        if (arena.getRemainingPlayers().size() <= 3) {
+        if (arena.getRemainingPlayers().size() < 3) {
             return true;
         }
 
@@ -156,22 +161,6 @@ public class Game {
         }
 
         return false;
-    }
-
-    public ImposterManager getImposterManager() {
-        return imposterManager;
-    }
-
-    public CrewmateManager getCrewmateManager() {
-        return crewmateManager;
-    }
-
-    public TaskBar getTaskBar() {
-        return taskBar;
-    }
-
-    public GameScoreboard getGameScoreboard() {
-        return gameScoreboard;
     }
 
     private void preparePlayer(Player player) {

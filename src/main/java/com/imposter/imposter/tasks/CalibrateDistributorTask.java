@@ -69,7 +69,9 @@ public class CalibrateDistributorTask extends PlayerTask {
 
     @Override
     public void cancel() {
-        runnable.cancel();
+        if (runnable != null) {
+            runnable.cancel();
+        }
     }
 
     public void handleButtonClick(int slot) {

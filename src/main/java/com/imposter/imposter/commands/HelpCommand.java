@@ -36,7 +36,7 @@ public class HelpCommand {
             sendLine("task <task Id> <arena Id>", "Create a new task location");
             sendLine("meeting <arena Id>", "Create the emergency meeting button location");
             sendLine("door <item Id> <door category> <arena Id>", "Set a door location for an arena. Use /wand to set the location");
-            sendLine("vent", "Create a new vent location");
+            sendLine("vent <vent category> <arena Id>", "Create a new vent location");
             sendLine("cameras create <arena Id>", "Create the cameras join sign");
             sendLine("cameras set <arena Id>", "Set a camera location");
             sendLine("wand", "Get the ImposterCraft Wand");

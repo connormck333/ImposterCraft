@@ -68,11 +68,11 @@ public class DeathManager {
         player.setGameMode(GameMode.SPECTATOR);
         player.getWorld().spawnParticle(Particle.DRAGON_BREATH, deathLocation, 20);
 
-//        if (arena.getGame().isGameOver()) {
-//            arena.endGame();
-//        } else {
+        if (arena.getGame().isGameOver()) {
+            arena.endGame();
+        } else {
             arena.getCorpseManager().createCorpse(player, deathLocation, false);
-//        }
+        }
     }
 
     public void killPlayerWithoutBody(Player player) {

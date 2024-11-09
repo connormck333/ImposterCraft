@@ -13,7 +13,7 @@ import static com.imposter.imposter.utils.GuiUtils.getMeta;
 
 public class Janitor extends ImposterRole {
 
-    private static final String TITLE = "Guesser";
+    private static final String TITLE = "Janitor";
     private static final String DESCRIPTION = "Clean up dead bodies!";
 
     public Janitor(UUID janitor) {

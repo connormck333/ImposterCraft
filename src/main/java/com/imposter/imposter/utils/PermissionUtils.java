@@ -11,11 +11,18 @@ public class PermissionUtils {
     private static final String ADMIN_PERMISSIONS = "imposter.admin";
 
     public static boolean doesPlayerHavePermissions(Player player) {
+        return doesPlayerHavePermissions(player, true);
+    }
+
+    public static boolean doesPlayerHavePermissions(Player player, boolean sendMessage) {
         if (player.isOp() || player.hasPermission(ADMIN_PERMISSIONS)) {
             return true;
         }
 
-        sendInvalidPermsMessageToPlayer(player);
+        if (sendMessage) {
+            sendInvalidPermsMessageToPlayer(player);
+        }
+
         return false;
     }
 
@@ -25,7 +32,7 @@ public class PermissionUtils {
         }
 
         if (sender instanceof Player player) {
-            return doesPlayerHavePermissions(player);
+            return doesPlayerHavePermissions(player, false);
         }
 
         return false;

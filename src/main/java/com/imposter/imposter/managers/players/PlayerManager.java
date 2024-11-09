@@ -73,6 +73,7 @@ public class PlayerManager {
         resetPlayer(player);
         players.remove(player.getUniqueId());
         removeRemainingPlayer(player.getUniqueId());
+        player.teleport(imposterCraft.getArenaManager().getMainLobbySpawn());
 
         if (arena.getState() == GameState.COUNTDOWN && players.size() < getRequiredPlayers()) {
             arena.sendMessage(ChatColor.RED + "There are not enough players. Countdown stopped.");

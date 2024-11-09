@@ -1,7 +1,7 @@
 package com.imposter.imposter.managers.mechanics;
 
-import com.imposter.imposter.instances.corpse_entities.CorpseEntity;
 import com.imposter.imposter.instances.Arena;
+import com.imposter.imposter.instances.CorpseEntity;
 import com.imposter.imposter.instances.PlayerCameras;
 import com.imposter.imposter.managers.players.PlayerManager;
 import org.bukkit.Location;

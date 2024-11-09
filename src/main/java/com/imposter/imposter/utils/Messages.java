@@ -2,6 +2,7 @@ package com.imposter.imposter.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -19,8 +20,13 @@ public class Messages {
     public static void sendRedMessageToPlayer(Player player, String message) {
         sendMessageToPlayer(player,ChatColor.RED + message);
     }
+
     public static void sendGreenMessageToPlayer(Player player, String message) {
         sendMessageToPlayer(player,ChatColor.GREEN + message);
+    }
+
+    public static void sendGreenMessageToPlayer(CommandSender player, String message) {
+        player.sendMessage(ChatColor.GREEN + message);
     }
 
     public static void sendTitleToPlayer(Player player, String title, String subtitle, int duration) {
@@ -37,6 +43,10 @@ public class Messages {
 
     public static void sendInvalidArenaIdMessage(Player player) {
         sendRedMessageToPlayer(player, "Invalid arena id!");
+    }
+
+    public static void sendInvalidArenaIdMessage(CommandSender sender) {
+        sender.sendMessage(ChatColor.RED + "Invalid arena id!");
     }
 
     public static void sendUnableMessageToPlayer(Player player) {

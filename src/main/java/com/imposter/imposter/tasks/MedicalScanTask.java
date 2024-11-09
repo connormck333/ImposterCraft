@@ -45,7 +45,9 @@ public class MedicalScanTask extends PlayerTask {
 
     @Override
     public void cancel() {
-        runnable.cancel();
+        if (runnable != null) {
+            runnable.cancel();
+        }
         statusBar.removeAll();
         sendRedMessageToPlayer(super.getPlayer(), "Could not complete medical scan. Do not move!");
     }

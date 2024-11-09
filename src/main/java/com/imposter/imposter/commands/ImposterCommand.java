@@ -3,7 +3,6 @@ package com.imposter.imposter.commands;
 import com.imposter.imposter.ImposterCraft;
 import com.imposter.imposter.instances.Arena;
 import com.imposter.imposter.utils.ConfigManager;
-import com.imposter.imposter.utils.GameState;
 import com.imposter.imposter.utils.Tasks;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -37,10 +36,21 @@ public class ImposterCommand implements CommandExecutor {
         if (args[0].equalsIgnoreCase("help")) {
             new HelpCommand(sender).doCommand();
             return true;
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("reset")) {
+            if (sender instanceof Player player) {
+                resetArena(player, args[1]);
+            } else {
+                int arenaId = -1;
+                try {
+                    arenaId = Integer.parseInt(args[1]);
+                } catch (Exception ignored) {}
+                imposterCraft.getArenaManager().resetArena(sender, arenaId);
+            }
+
+            return true;
         }
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
 
             if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
                 sendMessageToPlayer(player, ChatColor.GREEN + "These are the available arenas:");
@@ -58,32 +68,16 @@ public class ImposterCommand implements CommandExecutor {
                 }
 
             } else if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
-                if (imposterCraft.getArenaManager().getArena(player) != null) {
-                    sendMessageToPlayer(player, ChatColor.RED + "You are already in an arena!");
-                    return false;
-                }
-
                 int id;
                 try {
                     id = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
                     sendMessageToPlayer(player, ChatColor.RED + "You specified an invalid arena ID!");
-                    return false;
+                    return true;
                 }
 
-                if (id >= 0 && imposterCraft.getArenaManager().doesArenaExist(id)) {
-                    Arena arena = imposterCraft.getArenaManager().getArena(id);
-                    if (!arena.isReady()) {
-                        sendRedMessageToPlayer(player, "This arena has not finished setup.");
-                    } else if (arena.getState() == GameState.RECRUITING || arena.getState() == GameState.COUNTDOWN) {
-                        player.sendMessage(ChatColor.GREEN + "You have joined arena " + id);
-                        arena.addPlayer(player);
-                    } else {
-                        sendMessageToPlayer(player, ChatColor.RED + "You cannot join this arena right now.");
-                    }
-                } else {
-                    sendMessageToPlayer(player, ChatColor.RED + "You specified an invalid arena ID!");
-                }
+                imposterCraft.getArenaManager().playerJoinArena(player, id);
+
             } else if (args.length == 1 && args[0].equalsIgnoreCase("create")) {
                 createNewArena(player);
             } else if (args.length == 3 && args[0].equalsIgnoreCase("task")) {
@@ -96,8 +90,6 @@ public class ImposterCommand implements CommandExecutor {
                 } else {
                     saveArenaSpawn(player, args[1], true);
                 }
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("reset")) {
-                resetArena(player, args[1]);
             } else if (args.length == 2 && args[0].equalsIgnoreCase("meeting")) {
                 createMeetingItem(player, args[1]);
             } else if (args.length == 1 && args[0].equalsIgnoreCase("wand")) {
@@ -235,6 +227,8 @@ public class ImposterCommand implements CommandExecutor {
         Location playerLocation = player.getLocation();
         imposterCraft.getArenaManager().getArena(arenaId).getCamerasManager().addCameraLocation(playerLocation);
         saveArenaCameraLocation(arenaId, playerLocation);
+
+        sendGreenMessageToPlayer(player, "Camera position set! Make sure the player has something to stand on!");
     }
 
     private void saveArenaSpawn(Player player, String arenaIdStr, boolean lobbySpawn) {

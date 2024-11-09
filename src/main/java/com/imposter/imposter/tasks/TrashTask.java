@@ -111,7 +111,9 @@ public class TrashTask extends PlayerTask {
 
     @Override
     public void cancel() {
-        runnable.cancel();
+        if (runnable != null) {
+            runnable.cancel();
+        }
     }
 
     private void setupGui() {

@@ -75,6 +75,8 @@ public class UploadTask extends PlayerTask {
 
     @Override
     public void cancel() {
-        runnable.cancel();
+        if (runnable != null) {
+            runnable.cancel();
+        }
     }
 }

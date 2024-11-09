@@ -1,5 +1,8 @@
 package com.imposter.imposter.roles.imposter;
 
+import lombok.Getter;
+
+@Getter
 public enum ImposterRoleEnum {
     BOMBER("bomber"),
     JANITOR("janitor"),
@@ -11,10 +14,6 @@ public enum ImposterRoleEnum {
 
     ImposterRoleEnum(String role) {
         this.role = role;
-    }
-
-    public String getRole() {
-        return this.role;
     }
 
     public static ImposterRoleEnum fromString(String role) {

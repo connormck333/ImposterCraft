@@ -160,7 +160,7 @@ public class Arena {
     public void handleSignClick(Player player, Location signLocation) {
         if (meetingManager.isLocationMeetingSignLocation(signLocation)) {
             UUID uuid = player.getUniqueId();
-            if (!meetingManager.hasPlayerCalledMeeting(uuid)) {
+            if (!meetingManager.hasPlayerCalledMeeting(uuid) && playerManager.playersRemaining().contains(uuid)) {
                 meetingManager.startEmergencyMeeting(player, false);
             } else {
                 sendRedMessageToPlayer(player, "You have already used your 1 emergency meeting call!");
@@ -211,7 +211,7 @@ public class Arena {
     }
 
     public int calculateNumImposters() {
-        return playerManager.players().size() > (this.numImposters * 2) + 2 ? this.numImposters : 1;
+        return playerManager.players().size() > 6 ? this.numImposters : 1;
     }
 
     public boolean isMeetingActive() {

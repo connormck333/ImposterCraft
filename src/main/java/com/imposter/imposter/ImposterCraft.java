@@ -9,8 +9,8 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.imposter.imposter.commands.ImposterCommand;
-import com.imposter.imposter.instances.corpse_entities.CorpseEntity;
 import com.imposter.imposter.instances.Arena;
+import com.imposter.imposter.instances.CorpseEntity;
 import com.imposter.imposter.instances.Wand;
 import com.imposter.imposter.listeners.ChatListener;
 import com.imposter.imposter.listeners.ConnectListener;
@@ -124,15 +124,19 @@ public final class ImposterCraft extends JavaPlugin {
                 // Check if entity is player on cameras
                 CorpseEntity corpseEntity = arena.getCamerasManager().getEntityOnCameras(entityId);
                 if (corpseEntity != null) {
-                    Player camerasPlayer = corpseEntity.getPlayer();
-                    Bukkit.getScheduler().runTask(ImposterCraft.this, () -> {
-                        Location corpseLocation = corpseEntity.getLocation();
-                        if (arena.getGame().sheriff() != null && arena.getGame().sheriff().is(player.getUniqueId())) {
-                            arena.getDeathManager().sheriffKillPlayer(player, camerasPlayer);
-                        }
-                        arena.getDeathManager().killCrewmate(player, camerasPlayer, corpseLocation, false);
-                        arena.getCamerasManager().playerExitCameras(camerasPlayer);
-                    });
+                    Player camerasPlayer = Bukkit.getPlayer(corpseEntity.getPlayer());
+                    if (camerasPlayer != null) {
+                        Bukkit.getScheduler().runTask(ImposterCraft.this, () -> {
+                            Location corpseLocation = corpseEntity.getLocation();
+                            if (arena.getGame().sheriff() != null && arena.getGame().sheriff().is(player.getUniqueId())) {
+                                arena.getDeathManager().sheriffKillPlayer(player, camerasPlayer);
+                            }
+                            if (arena.isPlayerImposter(player)) {
+                                arena.getDeathManager().killCrewmate(player, camerasPlayer, corpseLocation, false);
+                                arena.getCamerasManager().playerExitCameras(camerasPlayer);
+                            }
+                        });
+                    }
                 }
 
                 // Check for janitor cleaning
@@ -155,7 +159,6 @@ public final class ImposterCraft extends JavaPlugin {
                             arena.getCorpseManager().removeCorpse(entityId);
                             arena.getDeathManager().restartPlayerKillCooldown(player.getUniqueId());
                         } else {
-                            System.out.println("wait for cooldown janitor");
                             sendWaitForCooldownMessage(player, arena.getDeathManager().getPlayerCooldownRemaining(player.getUniqueId()));
                         }
                         return;

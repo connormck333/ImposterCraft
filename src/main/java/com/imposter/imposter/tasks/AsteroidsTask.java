@@ -41,7 +41,9 @@ public class AsteroidsTask extends PlayerTask {
 
     @Override
     public void cancel() {
-        this.runnable.cancel();
+        if (this.runnable != null) {
+            this.runnable.cancel();
+        }
     }
 
     public ArrayList<Material> getAsteroidColors() {

@@ -11,10 +11,11 @@ import java.util.*;
 import static com.imposter.imposter.utils.ConfigManager.getArenaVentLocations;
 import static com.imposter.imposter.utils.GuiUtils.getExitVentItem;
 import static com.imposter.imposter.utils.GuiUtils.getNextVentItem;
+import static com.imposter.imposter.utils.Utils.locationEquals;
 
 public class VentManager {
 
-    private Arena arena;
+    private final Arena arena;
 
     private final Map<String, ArrayList<VentLocation>> ventLocations;
     private final Map<UUID, PlayerVentLocation> currentlyVentedPlayers;
@@ -66,7 +67,7 @@ public class VentManager {
     private String getVentCategoryFromLocation(Location location) {
         for (String key : ventLocations.keySet()) {
             for (VentLocation ventLocation : ventLocations.get(key)) {
-                if (location.equals(ventLocation.getLocation())) {
+                if (locationEquals(ventLocation.getLocation(), location)) {
                     return key;
                 }
             }

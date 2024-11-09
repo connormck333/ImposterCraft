@@ -52,7 +52,6 @@ public class Wand {
             locations = new ArrayList<>();
         }
         locations.add(location);
-        System.out.println("wands size: " + locations.size());
         playerWandClicks.put(uuid, locations);
         sendGreenMessageToPlayer(player, "Location " + (locations.size()) + " set.");
     }
@@ -71,7 +70,7 @@ public class Wand {
             sendRedMessageToPlayer(player, "Unknown item type");
             return;
         } else if (!material.isBlock()) {
-            sendRedMessageToPlayer(player, "You must select a block!");
+            sendRedMessageToPlayer(player, "You must select a valid block!");
             return;
         }
 
@@ -81,14 +80,17 @@ public class Wand {
         }
 
         List<Location> doorLocations = playerWandClicks.get(player.getUniqueId());
-        if (doorLocations.size() != 2) {
-            sendRedMessageToPlayer(player, "You have not set 2 locations using the wand! Try /arena wand");
+        if (doorLocations == null || doorLocations.size() != 2) {
+            sendRedMessageToPlayer(player, "You have not set 2 locations using the wand! Try /imposter wand");
             return;
         }
 
         int id = saveArenaDoorLocation(arenaId, doorLocations.get(0), doorLocations.get(1), item, title);
         if (id != -1) {
             imposterCraft.getArenaManager().getArena(arenaId).getDoorManager().addDoor(title, new DoorLocation(doorLocations.get(0), doorLocations.get(1), id, item, title));
+            sendGreenMessageToPlayer(player, "Door" + id + "created in " + title + ".");
+        } else {
+            sendRedMessageToPlayer(player, "There was an error creating this door.");
         }
     }
 }

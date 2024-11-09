@@ -2,9 +2,12 @@ package com.imposter.imposter.managers;
 
 import com.imposter.imposter.ImposterCraft;
 import com.imposter.imposter.instances.Arena;
+import com.imposter.imposter.utils.GameState;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -13,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.imposter.imposter.utils.ConfigManager.*;
-import static com.imposter.imposter.utils.Messages.sendGreenMessageToPlayer;
-import static com.imposter.imposter.utils.Messages.sendInvalidArenaIdMessage;
+import static com.imposter.imposter.utils.Messages.*;
+import static com.imposter.imposter.utils.Messages.sendMessageToPlayer;
 
 public class ArenaManager {
 
@@ -101,7 +104,7 @@ public class ArenaManager {
         arenas.add(newArena);
     }
 
-    public void resetArena(Player player, int arenaId) {
+    public void resetArena(CommandSender player, int arenaId) {
         if (!doesArenaExist(arenaId)) {
             sendInvalidArenaIdMessage(player);
             return;
@@ -111,5 +114,30 @@ public class ArenaManager {
         arena.reset(true);
 
         sendGreenMessageToPlayer(player, "Arena " + arenaId + " reset!");
+    }
+
+    public void playerJoinArena(Player player, int arenaId) {
+        if (getArena(player) != null) {
+            sendMessageToPlayer(player, ChatColor.RED + "You are already in an arena!");
+            return;
+        } else if (!doesArenaExist(arenaId)) {
+            sendInvalidArenaIdMessage(player);
+        }
+
+        if (arenaId >= 0 && imposterCraft.getArenaManager().doesArenaExist(arenaId)) {
+            Arena arena = imposterCraft.getArenaManager().getArena(arenaId);
+            if (!arena.isReady()) {
+                sendRedMessageToPlayer(player, "This arena has not finished setup.");
+            } else if (arena.getPlayers().size() >= 12) {
+                sendRedMessageToPlayer(player, "You cannot join this arena. This arena is full.");
+            } else if (arena.getState() == GameState.RECRUITING || arena.getState() == GameState.COUNTDOWN) {
+                player.sendMessage(ChatColor.GREEN + "You have joined arena " + arenaId);
+                arena.addPlayer(player);
+            } else {
+                sendMessageToPlayer(player, ChatColor.RED + "You cannot join this arena right now.");
+            }
+        } else {
+            sendMessageToPlayer(player, ChatColor.RED + "You specified an invalid arena ID!");
+        }
     }
 }

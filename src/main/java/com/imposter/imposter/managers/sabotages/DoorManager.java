@@ -1,6 +1,7 @@
 package com.imposter.imposter.managers.sabotages;
 
 import com.imposter.imposter.instances.locations.DoorLocation;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,6 +16,7 @@ import static com.imposter.imposter.utils.ConfigManager.getArenaDoorLocations;
 
 public class DoorManager {
 
+    @Getter
     private final Map<String, ArrayList<DoorLocation>> doorLocations;
     private final List<String> closedDoors;
 
@@ -51,10 +53,6 @@ public class DoorManager {
             fillDoor(doorLocation, true);
         }
         closedDoors.remove(id);
-    }
-
-    public Map<String, ArrayList<DoorLocation>> getDoorLocations() {
-        return this.doorLocations;
     }
 
     public boolean areAllDoorsClosed() {

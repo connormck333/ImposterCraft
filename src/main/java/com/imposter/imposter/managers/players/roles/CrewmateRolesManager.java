@@ -10,13 +10,12 @@ import static com.imposter.imposter.utils.ConfigManager.getEnabledCrewmateRoles;
 
 public class CrewmateRolesManager extends RolesManager {
 
-    private final List<CrewmateRoleEnum> enabledRoles;
     private final List<CrewmateRoleEnum> availableCrewmateRoles;
 
     public CrewmateRolesManager(Arena arena) {
         super(arena);
 
-        this.enabledRoles = getEnabledCrewmateRoles();
+        List<CrewmateRoleEnum> enabledRoles = getEnabledCrewmateRoles();
         this.availableCrewmateRoles = new ArrayList<>(enabledRoles);
     }
 
@@ -59,7 +58,10 @@ public class CrewmateRolesManager extends RolesManager {
     }
 
     public void setupInventoryForRole(UUID uuid) {
-        getRole(uuid).setup();
+        Role role = getRole(uuid);
+        if (role != null) {
+            role.setup();
+        }
     }
 
     private Role createPlayerRole(UUID uuid, CrewmateRoleEnum role) {

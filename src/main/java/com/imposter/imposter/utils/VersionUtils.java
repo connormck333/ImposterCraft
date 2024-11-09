@@ -1,13 +1,6 @@
 package com.imposter.imposter.utils;
 
-import com.imposter.imposter.ImposterCraft;
-import com.imposter.imposter.instances.Arena;
-import com.imposter.imposter.instances.corpse_entities.CorpseEntity;
-import com.imposter.imposter.instances.corpse_entities.CorpseEntityV1_20_1;
-import com.imposter.imposter.instances.corpse_entities.CorpseEntityV1_21_1;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,9 +21,6 @@ public class VersionUtils {
             int currentMajor = Integer.parseInt(matcher.group(1));
             int currentMinor = Integer.parseInt(matcher.group(2));
 
-            System.out.println(currentMajor + " " + major);
-            System.out.println(currentMinor + " " + minor);
-
             return currentMajor == major && currentMinor == minor;
         }
 
@@ -41,13 +31,13 @@ public class VersionUtils {
         String currentVersion = Bukkit.getVersion();
 
         // Extract major and minor versions from the current version
-        String regex = "MC: (\\d+)\\.(\\d+)";
+        String regex = "MC: 1\\.(\\d+)(?:\\.(\\d+))?";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(currentVersion);
 
         if (matcher.find()) {
             int currentMajor = Integer.parseInt(matcher.group(1));
-            int currentMinor = Integer.parseInt(matcher.group(2));
+            int currentMinor = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : 0;
 
             // Extract major and minor from the versionToCheck
             String[] versionParts = versionToCheck.split("\\.");
@@ -70,17 +60,7 @@ public class VersionUtils {
             try {
                 Method method = meta.getClass().getMethod("setEnchantmentGlintOverride", boolean.class);
                 method.invoke(meta, true);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public static CorpseEntity createCorpseEntityByVersion(ImposterCraft imposterCraft, Arena arena, Player player, Location deathLocation, boolean isPlayerOnCameras) {
-        if (isVersionAtLeast("20.2")) {
-            return new CorpseEntityV1_21_1(imposterCraft, arena, player, deathLocation, isPlayerOnCameras);
-        } else {
-            return new CorpseEntityV1_20_1(imposterCraft, arena, player, deathLocation, isPlayerOnCameras);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
         }
     }
 }

@@ -9,10 +9,12 @@ import com.imposter.imposter.roles.imposter.ImposterRoleEnum;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.imposter.imposter.utils.Messages.sendRedMessageToPlayer;
 import static com.imposter.imposter.utils.Utils.locationEquals;
 
 public class ConfigManager {
@@ -109,8 +111,6 @@ public class ConfigManager {
             }
         }
 
-        System.out.println("Enabled imposter roles: " + enabledRoles);
-
         return enabledRoles;
     }
 
@@ -130,8 +130,6 @@ public class ConfigManager {
                 }
             }
         }
-
-        System.out.println("Enabled crewmate roles: " + enabledRoles);
 
         return enabledRoles;
     }
@@ -192,35 +190,39 @@ public class ConfigManager {
         return loadLocation(section, "");
     }
 
-    public static void removeTaskLocationFromConfig(Location location) {
+    public static void removeTaskLocationFromConfig(Player player, Location location) {
         for (int arenaId : getArenaIds()) {
             Location meetingLocation = getMeetingSignLocation(arenaId);
             if (meetingLocation != null && locationEquals(location, meetingLocation)) {
                 deleteMeetingLocation(arenaId);
+                sendRedMessageToPlayer(player, "Deleted meeting start location.");
             }
 
             Location camerasLocation = getCameraJoinLocation(arenaId);
             if (camerasLocation != null && locationEquals(location, camerasLocation)) {
                 deleteCamerasJoinLocation(arenaId);
+                sendRedMessageToPlayer(player, "Deleted cameras join location.");
             }
 
             List<TaskLocation> taskLocations = getTaskLocations(arenaId);
             for (TaskLocation taskLocation : taskLocations) {
                 if (taskLocation.equals(location)) {
                     deleteTaskLocation(arenaId, taskLocation.getId());
+                    sendRedMessageToPlayer(player, "Deleted task location.");
                     break;
                 }
             }
         }
     }
 
-    public static void removeVentLocationFromConfig(Location location) {
+    public static void removeVentLocationFromConfig(Player player, Location location) {
         for (int arenaId : getArenaIds()) {
             Map<String, ArrayList<VentLocation>> ventLocations = getArenaVentLocations(arenaId);
             for (String key : ventLocations.keySet()) {
                 for (VentLocation ventLocation : ventLocations.get(key)) {
                     if (ventLocation.getLocation().equals(location)) {
                         deleteVentLocation(arenaId, ventLocation.getId());
+                        sendRedMessageToPlayer(player, "Deleted vent location.");
                         break;
                     }
                 }

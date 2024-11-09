@@ -15,15 +15,13 @@ import static com.imposter.imposter.utils.Messages.sendTitleToPlayer;
 public class ImposterRolesManager extends RolesManager {
 
     private final ImposterCraft imposterCraft;
-    private final List<ImposterRoleEnum> enabledRoles;
     private final List<ImposterRoleEnum> availableImposterRoleEnums;
 
     public ImposterRolesManager(ImposterCraft imposterCraft, Arena arena) {
         super(arena);
 
         this.imposterCraft = imposterCraft;
-        this.enabledRoles = getEnabledImposterRoles();
-        this.availableImposterRoleEnums = new ArrayList<>(enabledRoles);
+        this.availableImposterRoleEnums = new ArrayList<>(getEnabledImposterRoles());
     }
 
     public BountyHunter bountyHunter() {
@@ -47,8 +45,7 @@ public class ImposterRolesManager extends RolesManager {
 
         if (!availableImposterRoleEnums.isEmpty()) {
             int roleIndex = rand.nextInt(availableImposterRoleEnums.size());
-//            ImposterRoleEnum role = availableImposterRoleEnums.get(roleIndex);
-            ImposterRoleEnum role = ImposterRoleEnum.GUESSER;
+            ImposterRoleEnum role = availableImposterRoleEnums.get(roleIndex);
             availableImposterRoleEnums.remove(roleIndex);
 
             createPlayerRole(uuid, role);
@@ -65,7 +62,10 @@ public class ImposterRolesManager extends RolesManager {
     }
 
     public void setupInventoryForRole(UUID uuid) {
-        getRole(uuid).setup();
+        Role role = getRole(uuid);
+        if (role != null) {
+            role.setup();
+        }
     }
 
     private void createPlayerRole(UUID uuid, ImposterRoleEnum role) {
