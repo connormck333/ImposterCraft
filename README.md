@@ -33,52 +33,52 @@ Crewmate roles:
 
 _More coming soon..._
 
-Commands
-**/imposter help** - list all the available ImposterCraft commands
-**/imposter list** - list all arenas
-**/imposter join** <arena id> - join an arena
-**/imposter leave** - leave an arena
+## Commands
+**/imposter help** - list all the available ImposterCraft commands  
+**/imposter list** - list all arenas  
+**/imposter join** <arena id> - join an arena  
+**/imposter leave** - leave an arena    
 
-Admin commands:
-**/imposter create** - create a new arena
-**/imposter lobby {arena id / 'main'}** - set the lobby spawn point for an arena or the main lobby.
-**/imposter spawn <arena id>** - set the spawn points for an arena. You can set up to 12 per arena.
-**/imposter reset <arena id>** - reset an arena.
-**/imposter task <task id> <arena id>** - create a new task location. Get the task ids from list below.
-**/imposter meeting <arena id>** - create the emergency meeting button location.
-**/imposter door <item id> <door category> <arena id>** - set a door location for an arena. Use /imposter wand to set the location.
-**/imposter vent <vent category> <arena id>** - create a new vent location.
-**/imposter cameras create <arena id>** - create the cameras join sign.
-**/imposter cameras set <arena id>** - set a camera location.
-**/imposter wand** - get the ImposterCraft wand.
+Admin commands:  
+**/imposter create** - create a new arena  
+**/imposter lobby {arena id / 'main'}** - set the lobby spawn point for an arena or the main lobby.  
+**/imposter spawn <arena id>** - set the spawn points for an arena. You can set up to 12 per arena.  
+**/imposter reset <arena id>** - reset an arena.  
+**/imposter task <task id> <arena id>** - create a new task location. Get the task ids from list below.  
+**/imposter meeting <arena id>** - create the emergency meeting button location.  
+**/imposter door <item id> <door category> <arena id>** - set a door location for an arena. Use /imposter wand to set the location.  
+**/imposter vent <vent category> <arena id>** - create a new vent location.  
+**/imposter cameras create <arena id>** - create the cameras join sign.  
+**/imposter cameras set <arena id>** - set a camera location.  
+**/imposter wand** - get the ImposterCraft wand.  
 
 ## How to setup
 _**Please read this carefully when setting up your arenas._
 
-_How to create an arena?_
+_How to create an arena?_  
 /imposter create
 
-_How do I setup tasks and sabotages?_
+_How do I setup tasks and sabotages?_  
 First, use the "/imposter task <task id> <arena id>" to get the sign. Place the sign anywhere you want. To delete the task, just break the sign. Get the task id from the list below.  
 **You must place at least one of each task and 2 Reactor meltdown and Oxygen Depletion sabotages for your arena to be ready to play.
 
-_How do I create vents?_
+_How do I create vents?_  
 Type "/imposter vent <vent category> <arena id>". Place the trapdoor where ever you want. To delete the vent, just break the trapdoor.
 
-_How do I create doors?_
+_How do I create doors?_  
 First you need the ImposterCraft Wand, type "/imposter wand". Right click two blocks with the wand to set your door locations. Finally, type "/imposter door <item id> <door category> <arena id>". Change item id to the block of your choice. Enter a door category. You can reuse this door category to close more than 1 door at a time.
 
-_How do I enable cameras?_
+_How do I enable cameras?_  
 Firstly, you need to create a camera join location, type "/imposter cameras create <arena id>". Place this sign anywhere.
 To create camera locations, move to the desired location and type "/imposter cameras set <arena id>".
 
-_Can I create a lobby spawn point?_
+_Can I create a lobby spawn point?_  
 Of course! Type "/imposter lobby <arena id>" to set lobby spawn for an arena. To set the main lobby, type "/imposter lobby main".
 
-_How to set the emergency meeting button?_
+_How to set the emergency meeting button?_  
 Type "/imposter meeting <arena id>" and place the sign anywhere.
 
-_Can I set game spawn points?_
+_Can I set game spawn points?_  
 Of course! Type "/imposter spawn <arena id>" in the desired location. You can set up to 12 spawn points per arena.
 
 ## Dependencies
