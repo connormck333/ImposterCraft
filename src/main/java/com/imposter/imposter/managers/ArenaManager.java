@@ -131,7 +131,7 @@ public class ArenaManager {
             } else if (arena.getPlayers().size() >= 12) {
                 sendRedMessageToPlayer(player, "You cannot join this arena. This arena is full.");
             } else if (arena.getState() == GameState.RECRUITING || arena.getState() == GameState.COUNTDOWN) {
-                player.sendMessage(ChatColor.GREEN + "You have joined arena " + arenaId);
+                sendMessageToPlayer(player, ChatColor.GREEN + "You have joined arena " + arenaId);
                 arena.addPlayer(player);
             } else {
                 sendMessageToPlayer(player, ChatColor.RED + "You cannot join this arena right now.");

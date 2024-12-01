@@ -1,5 +1,6 @@
 package com.imposter.imposter.utils;
 
+import com.imposter.imposter.ImposterCraft;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,12 +10,18 @@ import java.util.UUID;
 
 public class Messages {
 
+    static ImposterCraft imposterCraft;
+
+    public static void setup(ImposterCraft imposterCraft) {
+        Messages.imposterCraft = imposterCraft;
+    }
+
     public static void sendMessageToPlayer(Player player, String message) {
-        player.sendMessage(message);
+        player.sendMessage(imposterCraft.getMessagePrefix() + message);
     }
 
     public static void sendMessageToPlayer(UUID uuid, String message) {
-        Bukkit.getPlayer(uuid).sendMessage(message);
+        Bukkit.getPlayer(uuid).sendMessage(imposterCraft.getMessagePrefix() + message);
     }
 
     public static void sendRedMessageToPlayer(Player player, String message) {
@@ -26,7 +33,7 @@ public class Messages {
     }
 
     public static void sendGreenMessageToPlayer(CommandSender player, String message) {
-        player.sendMessage(ChatColor.GREEN + message);
+        player.sendMessage(imposterCraft.getMessagePrefix() + ChatColor.GREEN + message);
     }
 
     public static void sendTitleToPlayer(Player player, String title, String subtitle, int duration) {
@@ -46,7 +53,7 @@ public class Messages {
     }
 
     public static void sendInvalidArenaIdMessage(CommandSender sender) {
-        sender.sendMessage(ChatColor.RED + "Invalid arena id!");
+        sender.sendMessage(imposterCraft.getMessagePrefix() + ChatColor.RED + "Invalid arena id!");
     }
 
     public static void sendUnableMessageToPlayer(Player player) {

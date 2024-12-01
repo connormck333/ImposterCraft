@@ -31,6 +31,11 @@ num-tasks-per-player: 5
 # Number of seconds doors will close for
 doors-shut-seconds: 10
 
+# Message prefix - customise the message for ImposterCraft messages
+# Enter "null" to have no message prefix
+# Use '&' to add color and effects
+message-prefix: ""
+
 #
 # * Roles *
 #

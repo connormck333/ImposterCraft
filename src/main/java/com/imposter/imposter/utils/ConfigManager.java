@@ -6,6 +6,7 @@ import com.imposter.imposter.instances.locations.VentLocation;
 import com.imposter.imposter.instances.locations.TaskLocation;
 import com.imposter.imposter.roles.crewmate.CrewmateRoleEnum;
 import com.imposter.imposter.roles.imposter.ImposterRoleEnum;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.imposter.imposter.utils.Constants.BOLD_YELLOW;
 import static com.imposter.imposter.utils.Messages.sendRedMessageToPlayer;
 import static com.imposter.imposter.utils.Utils.locationEquals;
 
@@ -38,6 +40,24 @@ public class ConfigManager {
 
     public static int getMeetingSeconds() {
         return config.getInt("meeting-seconds");
+    }
+
+    public static String getMessagePrefix() {
+        String defaultPrefix = ChatColor.GRAY + "[" + BOLD_YELLOW + "Imposter" + ChatColor.GRAY + "] ";
+        String prefix;
+        try {
+            prefix = config.getString("message-prefix");
+        } catch (Exception e) {
+            return defaultPrefix;
+        }
+
+        if (prefix == null) {
+            return defaultPrefix;
+        } else if (prefix.equalsIgnoreCase("null")) {
+            return "";
+        }
+
+        return prefix.equalsIgnoreCase("") ? defaultPrefix : ChatColor.translateAlternateColorCodes('&', prefix);
     }
 
     public static Location getLobbySpawn() {

@@ -22,6 +22,16 @@ commands:
         usage: "/imposter create"
         permission: "imposter.admin"
         permission-message: "You do not have permission to use this command"
+      impostercraft start:
+        description: "Start an arena"
+        usage: "/imposter start <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
+      impostercraft end:
+        description: "End an arena"
+        usage: "/imposter end <arena Id>"
+        permission: "imposter.admin"
+        permission-message: "You do not have permission to use this command"
       impostercraft task:
         description: "Create a new task location"
         usage: "/imposter task <task Id> <arena Id>"

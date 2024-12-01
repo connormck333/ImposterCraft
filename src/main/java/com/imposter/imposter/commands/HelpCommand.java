@@ -30,6 +30,9 @@ public class HelpCommand {
 
         if (doesSenderHavePermissions(sender)) {
             sendLine("create", "Create a new arena");
+            sendLine("start", "Start the arena you are currently in");
+            sendLine("start <arena Id>", "Start game for an arena");
+            sendLine("end <arena Id>", "End the game for an arena");
             sendLine("lobby {arena Id / 'main'}", "Set the lobby spawn point for an arena");
             sendLine("spawn <arena Id>", "Set a spawn point for an arena");
             sendLine("reset <arena Id>", "Reset an arena");

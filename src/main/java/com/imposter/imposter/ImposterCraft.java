@@ -19,6 +19,8 @@ import com.imposter.imposter.managers.ArenaManager;
 import com.imposter.imposter.roles.crewmate.Deputy;
 import com.imposter.imposter.utils.ConfigManager;
 import com.imposter.imposter.utils.GameState;
+import com.imposter.imposter.utils.Messages;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,8 +36,12 @@ import static com.imposter.imposter.utils.Messages.sendWaitForCooldownMessage;
 
 public final class ImposterCraft extends JavaPlugin {
 
+    @Getter
     private ArenaManager arenaManager;
+    @Getter
     private ProtocolManager protocolManager;
+    @Getter
+    private String messagePrefix;
 
     private Map<UUID, Long> entityInteractions;
 
@@ -43,9 +49,11 @@ public final class ImposterCraft extends JavaPlugin {
     public void onEnable() {
         ConfigManager.setupConfig(this);
         Wand.setupWand(this);
+        Messages.setup(this);
         this.arenaManager = new ArenaManager(this);
         this.protocolManager = ProtocolLibrary.getProtocolManager();
         this.entityInteractions = new HashMap<>();
+        this.messagePrefix = ConfigManager.getMessagePrefix();
 
         // Listeners setup
         createEquipmentPacketListener();
@@ -57,14 +65,6 @@ public final class ImposterCraft extends JavaPlugin {
 
         String commandTitle = "impostercraft";
         getCommand(commandTitle).setExecutor(new ImposterCommand(this));
-    }
-
-    public ArenaManager getArenaManager() {
-        return this.arenaManager;
-    }
-
-    public ProtocolManager getProtocolManager() {
-        return this.protocolManager;
     }
 
     private void createEquipmentPacketListener() {
