@@ -3,6 +3,7 @@ package com.imposter.imposter.commands;
 import com.imposter.imposter.ImposterCraft;
 import com.imposter.imposter.instances.Arena;
 import com.imposter.imposter.utils.ConfigManager;
+import com.imposter.imposter.utils.GameState;
 import com.imposter.imposter.utils.Tasks;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -78,6 +79,10 @@ public class ImposterCommand implements CommandExecutor {
 
                 imposterCraft.getArenaManager().playerJoinArena(player, id);
 
+            } else if (args.length == 1 && args[0].equalsIgnoreCase("start")) {
+                startArenaByPlayer(player);
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("start")) {
+                startArenaById(player, args[1]);
             } else if (args.length == 1 && args[0].equalsIgnoreCase("create")) {
                 createNewArena(player);
             } else if (args.length == 3 && args[0].equalsIgnoreCase("task")) {
@@ -118,6 +123,42 @@ public class ImposterCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    private void startArenaByPlayer(Player player) {
+        Arena arena = imposterCraft.getArenaManager().getArena(player);
+        startArena(arena, player);
+    }
+
+    private void startArenaById(Player player, String arenaId) {
+        int id;
+        try {
+            id = Integer.parseInt(arenaId);
+        } catch (Exception e) {
+            sendInvalidArenaIdMessage(player);
+            return;
+        }
+        Arena arena = imposterCraft.getArenaManager().getArena(id);
+
+        startArena(arena, player);
+    }
+
+    private void startArena(Arena arena, Player player) {
+        if (!doesPlayerHavePermissions(player)) {
+            sendInvalidPermsMessageToPlayer(player);
+            return;
+        } else if (arena == null) {
+            sendRedMessageToPlayer(player, "You are not in an arena!");
+            return;
+        } else if (arena.getState() == GameState.COUNTDOWN) {
+            sendRedMessageToPlayer(player, "Game is already starting!");
+            return;
+        } else if (arena.getState() != GameState.RECRUITING) {
+            sendRedMessageToPlayer(player, "You cannot do this now.");
+            return;
+        }
+
+        arena.startCountdown();
     }
 
     private void createNewArena(Player player) {
