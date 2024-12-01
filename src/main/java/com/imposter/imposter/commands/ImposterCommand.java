@@ -83,6 +83,8 @@ public class ImposterCommand implements CommandExecutor {
                 startArenaByPlayer(player);
             } else if (args.length == 2 && args[0].equalsIgnoreCase("start")) {
                 startArenaById(player, args[1]);
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("end")) {
+                endArenaById(player, args[1]);
             } else if (args.length == 1 && args[0].equalsIgnoreCase("create")) {
                 createNewArena(player);
             } else if (args.length == 3 && args[0].equalsIgnoreCase("task")) {
@@ -125,8 +127,41 @@ public class ImposterCommand implements CommandExecutor {
         return true;
     }
 
+    private void endArenaById(Player player, String arenaId) {
+        if (!doesPlayerHavePermissions(player)) {
+            sendInvalidPermsMessageToPlayer(player);
+            return;
+        }
+
+        int id;
+        try {
+            id = Integer.parseInt(arenaId);
+        } catch (Exception e) {
+            sendInvalidArenaIdMessage(player);
+            return;
+        }
+
+        Arena arena = imposterCraft.getArenaManager().getArena(id);
+
+        if (arena == null) {
+            sendInvalidArenaIdMessage(player);
+            return;
+        } else if (arena.getState() != GameState.LIVE && arena.getState() != GameState.MEETING) {
+            sendUnableMessageToPlayer(player);
+            return;
+        }
+
+        arena.endGameByAdmin();
+
+        sendGreenMessageToPlayer(player, "Ending arena " + id + ".");
+    }
+
     private void startArenaByPlayer(Player player) {
         Arena arena = imposterCraft.getArenaManager().getArena(player);
+        if (arena == null) {
+            sendRedMessageToPlayer(player, "You are not in an arena!");
+            return;
+        }
         startArena(arena, player);
     }
 
@@ -148,7 +183,7 @@ public class ImposterCommand implements CommandExecutor {
             sendInvalidPermsMessageToPlayer(player);
             return;
         } else if (arena == null) {
-            sendRedMessageToPlayer(player, "You are not in an arena!");
+            sendInvalidArenaIdMessage(player);
             return;
         } else if (arena.getState() == GameState.COUNTDOWN) {
             sendRedMessageToPlayer(player, "Game is already starting!");
@@ -159,6 +194,8 @@ public class ImposterCommand implements CommandExecutor {
         }
 
         arena.startCountdown();
+
+        sendGreenMessageToPlayer(player, "Starting arena " + arena.getId() + ".");
     }
 
     private void createNewArena(Player player) {

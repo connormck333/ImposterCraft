@@ -122,6 +122,11 @@ public class Arena {
         game.endGame(playerManager.getCrewmateRemainingCount() <= playerManager.getImposterRemainingCount());
     }
 
+    public void endGameByAdmin() {
+        this.sendMessage(ChatColor.YELLOW + "Game ended by admin.", true);
+        endGame();
+    }
+
     public void reset(boolean kickPlayers) {
         Location mainLobbySpawn = imposterCraft.getArenaManager().getMainLobbySpawn();
         for (UUID uuid : playerManager.players()) {
