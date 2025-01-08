@@ -34,8 +34,8 @@ public class ImposterCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (args[0].equalsIgnoreCase("help")) {
-            new HelpCommand(sender).doCommand();
+        if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
+            new HelpCommand(sender).doCommand(args.length == 2 ? args[1] : "1");
             return true;
         } else if (args.length == 2 && args[0].equalsIgnoreCase("reset")) {
             if (sender instanceof Player player) {
